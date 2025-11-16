@@ -14,9 +14,10 @@ function createNavigation(currentPage = '') {
         { name: 'About', path: isRoot ? 'pages/about.html' : 'about.html' },
         { name: 'Experience', path: isRoot ? 'pages/experience.html' : 'experience.html' },
         { name: 'Projects', path: isRoot ? 'pages/projects.html' : 'projects.html' },
-        { name: 'Skills', path: isRoot ? 'pages/skills.html' : 'skills.html' },
-        { name: 'Contact', path: isRoot ? 'pages/contact.html' : 'contact.html' },
+        // { name: 'Skills', path: isRoot ? 'pages/skills.html' : 'skills.html' },
+        // { name: 'Contact', path: isRoot ? 'pages/contact.html' : 'contact.html' },
         { name: 'Blogs', path: isRoot ? 'pages/blogs.html' : 'blogs.html' }
+
     ];
 
     const logoLink = isRoot ? 'index.html' : '../index.html';
