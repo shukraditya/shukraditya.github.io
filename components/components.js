@@ -16,7 +16,8 @@ function createNavigation(currentPage = '') {
         { name: 'Projects', path: isRoot ? 'pages/projects.html' : 'projects.html' },
         // { name: 'Skills', path: isRoot ? 'pages/skills.html' : 'skills.html' },
         // { name: 'Contact', path: isRoot ? 'pages/contact.html' : 'contact.html' },
-        { name: 'Blogs', path: isRoot ? 'pages/blogs.html' : 'blogs.html' }
+        { name: 'Blogs', path: isRoot ? 'pages/blogs.html' : 'blogs.html' },
+        { name: 'Books', path: isRoot ? 'pages/books.html' : 'books.html' } 
     ];
 
     const logoLink = isRoot ? 'index.html' : '../index.html';
