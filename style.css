@@ -15,10 +15,10 @@
 
 body {
     font-family: 'Courier New', Courier, monospace;
-    line-height: 1.6;
+    line-height: 1.5;
     color: var(--text-orange);
     background-color: var(--bg-dark);
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .container {
@@ -29,9 +29,9 @@ body {
 
 /* Content Box - Main bordered container */
 .content-box {
-    max-width: 900px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1.5rem;
     border: 1px solid var(--border-orange);
     background-color: var(--bg-dark);
 }
@@ -43,7 +43,7 @@ body {
     width: 100%;
     background-color: var(--bg-dark);
     z-index: 1000;
-    padding: 1rem 0;
+    padding: 0.75rem 0;
 }
 
 .nav-container {
@@ -51,7 +51,7 @@ body {
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
 }
@@ -59,19 +59,20 @@ body {
 .nav-logo {
     background-color: var(--text-orange-bright);
     color: var(--bg-dark);
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.8rem;
     font-weight: bold;
-    font-size: 1rem;
-    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
     display: inline-block;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 1.5rem;
+    gap: 1rem;
     padding-left: 0;
     flex-wrap: wrap;
+    margin-top: 0;
 }
 
 .nav-link {
@@ -107,36 +108,40 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 120px;
+    padding-top: 80px;
     padding-bottom: 2rem;
 }
 
 .hero-intro {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
 }
 
 .dashed-line {
     border: none;
     border-top: 1px dashed var(--border-orange);
-    margin: 1.5rem 0;
+    margin: 1rem 0;
 }
 
 .hero-tags {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--text-orange);
 }
 
 /* Sections */
 .section {
-    padding: 4rem 0;
-    scroll-margin-top: 100px;
+    padding: 2rem 0;
+    scroll-margin-top: 80px;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .section-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
     color: var(--text-orange);
     text-transform: lowercase;
 }
@@ -147,7 +152,7 @@ body {
 
 /* About Section */
 .about-content p {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
 }
 
 .about-content strong {
@@ -156,11 +161,11 @@ body {
 
 /* Experience Section */
 .experience-item {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .experience-item p {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
 }
 
 .experience-item strong {
@@ -170,13 +175,14 @@ body {
 .experience-item ul {
     list-style: none;
     padding-left: 0;
-    margin-top: 1rem;
+    margin-top: 0.8rem;
 }
 
 .experience-item ul li {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
     padding-left: 1.5rem;
     position: relative;
+    line-height: 1.5;
 }
 
 .experience-item ul li::before {
@@ -188,11 +194,11 @@ body {
 
 /* Projects Section */
 .project-item {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .project-item p {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
 }
 
 .project-item strong {
@@ -202,13 +208,14 @@ body {
 .project-item ul {
     list-style: none;
     padding-left: 0;
-    margin-top: 1rem;
+    margin-top: 0.8rem;
 }
 
 .project-item ul li {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
     padding-left: 1.5rem;
     position: relative;
+    line-height: 1.5;
 }
 
 .project-item ul li::before {
@@ -220,8 +227,8 @@ body {
 
 /* Skills Section */
 .skills-content p {
-    margin-bottom: 1rem;
-    line-height: 1.8;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
 }
 
 .skills-content strong {
@@ -230,7 +237,7 @@ body {
 
 /* Contact Section */
 .contact-content p {
-    line-height: 1.8;
+    line-height: 1.6;
 }
 
 .contact-content a {
@@ -257,9 +264,9 @@ a:hover {
     background-color: var(--bg-dark);
     color: var(--text-orange);
     text-align: center;
-    padding: 2rem 0;
+    padding: 1.5rem 0;
     border-top: 1px solid var(--border-orange);
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .footer-link {
@@ -313,16 +320,18 @@ a:hover {
     }
 
     .content-box {
-        padding: 1.5rem;
+        padding: 1.2rem;
         margin: 0 1rem;
+        max-width: calc(100% - 2rem);
     }
 
     .hero {
-        padding-top: 140px;
+        padding-top: 120px;
     }
 
     .section {
-        padding: 3rem 0;
+        padding: 2rem 0;
+        min-height: auto;
     }
 
     .hero-intro {
