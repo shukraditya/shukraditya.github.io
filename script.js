@@ -1,32 +1,54 @@
-document.addEventListener("DOMContentLoaded", function() {
-    
-    const menuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileNav = document.getElementById('mobile-nav');
+// Mobile menu toggle
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
 
-    // Toggle mobile menu
-    menuToggle.addEventListener('click', function() {
-        mobileNav.style.display = mobileNav.style.display === 'flex' ? 'none' : 'flex';
-        
-        // Bonus: Change menu icon to "X"
-        const icon = menuToggle.querySelector('i');
-        if (icon.getAttribute('data-feather') === 'menu') {
-            icon.setAttribute('data-feather', 'x');
-        } else {
-            icon.setAttribute('data-feather', 'menu');
-        }
-        feather.replace(); // Re-render the icon
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        hamburger.classList.toggle('active');
     });
 
-    // Hide mobile menu when a link is clicked
-    const mobileLinks = document.querySelectorAll('.mobile-link');
-    mobileLinks.forEach(link => {
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+    });
+
+    // Close menu when clicking a nav link
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
         link.addEventListener('click', () => {
-            mobileNav.style.display = 'none';
-            // Reset icon to 'menu'
-            const icon = menuToggle.querySelector('i');
-            icon.setAttribute('data-feather', 'menu');
-            feather.replace();
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
         });
     });
+}
 
+// Fade in animation on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe content boxes for fade-in animation
+document.addEventListener('DOMContentLoaded', () => {
+    const animateElements = document.querySelectorAll('.content-box, .experience-item, .project-item');
+    animateElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
 });
+

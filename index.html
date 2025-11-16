@@ -3,216 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shukraditya Bose | ML Engineer & Researcher</title>
+    <title>Shukraditya Bose - Portfolio</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 </head>
 <body>
-    <div class="container">
-
-        <nav>
-            <div class="nav-logo">Shukraditya Bose</div>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#contact" class="nav-contact-btn">Contact</a></li>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><a href="index.html" style="text-decoration: none; color: inherit;">shukraditya</a></div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="pages/about.html" class="nav-link">About</a></li>
+                <li><a href="pages/experience.html" class="nav-link">Experience</a></li>
+                <li><a href="pages/projects.html" class="nav-link">Projects</a></li>
+                <li><a href="pages/skills.html" class="nav-link">Skills</a></li>
+                <li><a href="pages/contact.html" class="nav-link">Contact</a></li>
             </ul>
-            <div class="nav-mobile-toggle" id="mobile-menu-toggle">
-                <i data-feather="menu"></i>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-        </nav>
-
-        <div class="mobile-nav-links" id="mobile-nav">
-            <li><a href="#about" class="mobile-link">About</a></li>
-            <li><a href="#projects" class="mobile-link">Projects</a></li>
-            <li><a href="#skills" class="mobile-link">Skills</a></li>
-            <li><a href="#contact" class="mobile-link">Contact</a></li>
         </div>
+    </nav>
 
-        <header class="hero">
-            [cite_start]<h1 class="hero-name">Shukraditya Bose [cite: 1]</h1>
-            <h2 class="hero-title">Machine Learning Engineer | Data Science & AI Research</h2>
-            <p class="hero-statement">
-                Building and fine-tuning intelligent systems. I specialize in Vision-Language Models (VLM), Computer Vision (CV), and advanced Knowledge Graph-enhanced RAG systems.
-            </p>
-            <div class="hero-links">
-                <a href="https://github.com/shukraditya" target="_blank" class="hero-link-item" aria-label="GitHub">
-                    <i data-feather="github"></i>
-                    <span>GitHub</span>
-                </a>
-                <a href="[Your_LinkedIn_URL_Here]" target="_blank" class="hero-link-item" aria-label="LinkedIn">
-                    <i data-feather="linkedin"></i>
-                    <span>LinkedIn</span>
-                </a>
+    <main>
+        <!-- Home Section -->
+        <section class="section hero">
+            <div class="content-box">
+                <p class="hero-intro">we all start somewhere.</p>
+                <hr class="dashed-line">
+                <p class="hero-tags">ml, dl, football, making things</p>
             </div>
-            <div class="hero-cta">
-                <a href="#projects" class="btn btn-primary">View My Work</a>
-                <a href="#contact" class="btn btn-secondary">Get in Touch</a>
-            </div>
-        </header>
+        </section>
+    </main>
 
-        <main>
-            <section id="about" class="about-section">
-                <div class="about-placeholder-photo">SB</div>
-                <div class="about-content">
-                    <h2 class="section-title">About Me</h2>
-                    <p>
-                        Hello, I'm Shukraditya. I am an Integrated M.Tech. [cite_start]Data Science student at Vellore Institute of Technology (VIT) [cite: 4, 5][cite_start], currently holding a 9.04 GPA[cite: 7]. [cite_start]I am passionate about engineering production-ready AI, from architecting multilingual OCR pipelines for 12 Indic scripts [cite: 17] [cite_start]to developing novel algorithms for continual learning [cite: 25] [cite_start]and detecting real-time threats with deep learning[cite: 31].
-                    </p>
-                    <p>
-                        [cite_start]My experience spans model optimization and building end-to-end systems that deliver measurable results, like a 15% accuracy boost in text recognition[cite: 18]. [cite_start]When I'm not coding, I'm actively involved in STEM outreach and exploring my interests in cybersecurity and photography[cite: 49].
-                    </p>
-                </div>
-            </section>
+    <footer class="footer">
+        <div class="container">
+            <p>2025 \\ shukraditya (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧</p>
+        </div>
+    </footer>
 
-            <section id="projects" class="project-section">
-                <h2 class="section-title">Featured Projects</h2>
-                
-                <div class="project-grid">
-                    <div class="project-card">
-                        <h3>Multilingual OCR & RAG System</h3>
-                        [cite_start]<p class="project-context">Vision Language Model Intern @ Sarvam AI [cite: 10, 11]</p>
-                        <p class="project-description">
-                            [cite_start]Architected an end-to-end multilingual OCR pipeline for 12 Indic scripts, processing over 120,000 pages[cite: 17]. [cite_start]Fine-tuned YOLO models for Gujarati handwritten text, achieving a 15% accuracy improvement[cite: 18]. [cite_start]Also developed an experimental Knowledge Graph-enhanced RAG system[cite: 20].
-                        </p>
-                        <ul class="project-tech-stack">
-                            <li>Qwen 2.5VL</li>
-                            <li>Gemma 3</li>
-                            <li>YOLO</li>
-                            <li>PyTorch</li>
-                            <li>HuggingFace</li>
-                            [cite_start]<li>Langfuse [cite: 19]</li>
-                        </ul>
-                    </div>
-                    <div class="project-card">
-                        <h3>Adaptive Regularization for Continual Learning</h3>
-                        [cite_start]<p class="project-context">Virtual Intern @ Samsung R&D Institute [cite: 21]</p>
-                        <p class="project-description">
-                            [cite_start]Developed a novel adaptive regularization algorithm to combat catastrophic forgetting in neural networks[cite: 25]. [cite_start]This method dynamically balances stability and plasticity using Fisher information matrices and online EMA updates [cite: 25, 26][cite_start], demonstrating superior adaptability over baselines[cite: 27].
-                        </p>
-                        <ul class="project-tech-stack">
-                            <li>PyTorch</li>
-                            <li>Continual Learning</li>
-                            <li>Model Optimization</li>
-                        </ul>
-                    </div>
-                    <div class="project-card">
-                        <h3>Real-Time Violence Detection System</h3>
-                        [cite_start]<p class="project-context">Machine Learning Intern @ KalkiNi [cite: 28]</p>
-                        <p class="project-description">
-                            [cite_start]Led the development of a violence detection system from CCTV footage[cite: 31]. [cite_start]Engineered a hybrid MobileNet and Bi-Directional LSTM model, enhancing detection accuracy from 84% to 92%[cite: 32]. [cite_start]Optimized the implementation to reduce local running time by over 15%[cite: 34].
-                        </p>
-                        <ul class="project-tech-stack">
-                            <li>Deep Learning</li>
-                            <li>MobileNet</li>
-                            <li>Bi-Directional LSTM</li>
-                            <li>OpenCV</li>
-                        </ul>
-                    </div>
-                    <div class="project-card">
-                        <h3>Skin Cancer Detection</h3>
-                        <p class="project-context">Personal Project</p>
-                        <p class="project-description">
-                            [cite_start]Engineered a robust skin cancer detection system using VGG16 and ResNet, achieving an 85.02% accuracy milestone[cite: 41]. [cite_start]Innovated by integrating Sobel Operator and Gradient Filling techniques, which reduced processing time and improved accuracy by over 4%[cite: 42, 43].
-                        </p>
-                        <ul class="project-tech-stack">
-                            <li>TensorFlow</li>
-                            <li>PyTorch</li>
-                            <li>Keras</li>
-                            <li>VGG16</li>
-                            <li>ResNet</li>
-                            [cite_start]<li>OpenCV [cite: 40]</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <section id="skills" class="skills-section">
-                <h2 class="section-title">Technical Toolkit</h2>
-                <table class="skills-table">
-                    <tbody>
-                        <tr>
-                            <th>Frameworks & Libraries</th>
-                            [cite_start]<td>PyTorch, TensorFlow, Keras, HuggingFace, Scikit-learn [cite: 47]</td>
-                        </tr>
-                        <tr>
-                            <th>Computer Vision</th>
-                            [cite_start]<td>OpenCV, YOLO, VGG16, ResNet [cite: 47, 41]</td>
-                        </tr>
-                        <tr>
-                            <th>NLP & RAG</th>
-                            [cite_start]<td>Transformers, Natural Language Processing, Langfuse, Knowledge Graphs [cite: 47, 19, 20]</td>
-                        </tr>
-                        <tr>
-                            <th>Data Science</th>
-                            [cite_start]<td>Numpy, Pandas, Matplotlib, Seaborn, Tableau [cite: 48]</td>
-                        </tr>
-                        <tr>
-                            <th>Languages & Databases</th>
-                            [cite_start]<td>Python, R, Java, C/C++, SQL, Postgres [cite: 48]</td>
-                        </tr>
-                        <tr>
-                            <th>DevOps & Cloud</th>
-                            [cite_start]<td>AWS, GCP, Docker, Kubernetes, ClickHouse [cite: 48, 19]</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="experience" class="experience-section">
-                <div class="experience-column">
-                    <h3 class="experience-title">Career</h3>
-                    <ul class="experience-list">
-                        <li>
-                            [cite_start]<strong>Vision Language Model Intern</strong> [cite: 11]
-                            <span>Sarvam AI, Bangalore | [cite_start]2025</span> [cite: 10, 15, 16]
-                        </li>
-                        <li>
-                            [cite_start]<strong>Virtual Intern</strong> [cite: 21]
-                            <span>Samsung R&D Institute, Bangalore | [cite_start]2025</span> [cite: 21, 23, 24]
-                        </li>
-                        <li>
-                            [cite_start]<strong>Machine Learning Intern</strong> [cite: 28]
-                            <span>KalkiNi, Vellore | [cite_start]2024</span> [cite: 28, 29, 30]
-                        </li>
-                    </ul>
-                </div>
-                <div class="education-column">
-                    <h3 class="experience-title">Education</h3>
-                    <ul class="experience-list">
-                        <li>
-                            <strong>Integrated M.Tech. [cite_start]Computer Science (Data Science)</strong> [cite: 5]
-                            <span>Vellore Institute of Technology | [cite_start]CGPA: 9.04/10</span> [cite: 4, 7]
-                        </li>
-                    </ul>
-                </div>
-            </section>
-
-            <section id="contact" class="contact-section">
-                <h2 class="section-title">Get In Touch</h2>
-                <p>
-                    I am actively seeking new opportunities in machine learning, data science, and AI research. 
-                    If you have a project in mind or believe we could build something great together, I'd love to connect.
-                </p>
-                [cite_start]<a href="mailto:shukra12bose@gmail.com" class="btn btn-primary contact-button">Email Me [cite: 2]</a>
-            </section>
-        </main>
-
-        <footer>
-            <div class="footer-links">
-                <a href="https://github.com/shukraditya" target="_blank" aria-label="GitHub"><i data-feather="github"></i></a>
-                <a href="[Your_LinkedIn_URL_Here]" target="_blank" aria-label="LinkedIn"><i data-feather="linkedin"></i></a>
-            </div>
-            <p>&copy; 2025 Shukraditya Bose. All rights reserved.</p>
-        </footer>
-
-    </div>
-    
-    <script>
-        feather.replace(); // Activates Feather Icons
-    </script>
     <script src="script.js"></script>
 </body>
 </html>
+
