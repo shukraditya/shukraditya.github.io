@@ -17,7 +17,6 @@ function createNavigation(currentPage = '') {
         // { name: 'Skills', path: isRoot ? 'pages/skills.html' : 'skills.html' },
         // { name: 'Contact', path: isRoot ? 'pages/contact.html' : 'contact.html' },
         { name: 'Blogs', path: isRoot ? 'pages/blogs.html' : 'blogs.html' }
-
     ];
 
     const logoLink = isRoot ? 'index.html' : '../index.html';
