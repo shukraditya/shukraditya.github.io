@@ -5,6 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books - Shukraditya Bose</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Books page styles following the main design system */
+        .book-section {
+            margin-top: 1.5rem;
+        }
+
+        .book-section p {
+            margin-bottom: 0.8rem;
+            color: var(--text-orange);
+        }
+
+        .book-section strong {
+            color: var(--text-orange);
+        }
+
+        .book-section a {
+            color: var(--link-orange);
+            text-decoration: underline;
+        }
+
+        .book-section a:hover {
+            opacity: 0.7;
+        }
+
+        /* Additional book-specific styles if needed */
+        .book-item {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed var(--border-orange);
+        }
+
+        .book-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .book-meta {
+            color: var(--text-orange);
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-description {
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation will be injected here -->
@@ -19,7 +74,7 @@
                 <hr class="dashed-line">
 
                 <div class="book-section">
-                    <p><strong>Currently reading:</strong> Speech and Natural Language Processing</p>
+                    <p><strong>Currently reading:</strong> <a href="books/jax/jax.html">Deep Learning with JAX</a></p>
                 </div>
             </div>
         </section>

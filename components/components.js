@@ -4,23 +4,38 @@
 function createNavigation(currentPage = '') {
     // Determine the base path based on current location
     const pathname = window.location.pathname;
-    const isRoot = pathname === '/' || 
-                   pathname === '/index.html' || 
+    const isRoot = pathname === '/' ||
+                   pathname === '/index.html' ||
                    pathname.endsWith('/index.html') ||
                    (!pathname.includes('/pages/') && pathname.split('/').filter(p => p).length <= 1);
-    
+
+    // Calculate depth based on pathname to handle nested directories
+    const pathSegments = pathname.split('/').filter(p => p && p !== 'index.html');
+    const depth = pathSegments.length;
+
+    // Generate the correct number of "../" based on depth
+    let basePath = '';
+    if (isRoot) {
+        basePath = '';
+    } else {
+        // For /pages/something.html -> depth 2 -> '../'
+        // For /pages/books/jax/jax.html -> depth 4 -> '../../../'
+        const upLevels = Math.max(0, depth - 1);
+        basePath = '../'.repeat(upLevels);
+    }
+
     const navItems = [
-        { name: 'Home', path: isRoot ? 'index.html' : '../index.html' },
-        { name: 'About', path: isRoot ? 'pages/about.html' : 'about.html' },
-        { name: 'Experience', path: isRoot ? 'pages/experience.html' : 'experience.html' },
-        { name: 'Projects', path: isRoot ? 'pages/projects.html' : 'projects.html' },
-        // { name: 'Skills', path: isRoot ? 'pages/skills.html' : 'skills.html' },
-        // { name: 'Contact', path: isRoot ? 'pages/contact.html' : 'contact.html' },
-        { name: 'Blogs', path: isRoot ? 'pages/blogs.html' : 'blogs.html' },
-        { name: 'Books', path: isRoot ? 'pages/books.html' : 'books.html' } 
+        { name: 'Home', path: isRoot ? 'index.html' : `${basePath}index.html` },
+        { name: 'About', path: isRoot ? 'pages/about.html' : `${basePath}pages/about.html` },
+        { name: 'Experience', path: isRoot ? 'pages/experience.html' : `${basePath}pages/experience.html` },
+        { name: 'Projects', path: isRoot ? 'pages/projects.html' : `${basePath}pages/projects.html` },
+        // { name: 'Skills', path: isRoot ? 'pages/skills.html' : `${basePath}pages/skills.html` },
+        // { name: 'Contact', path: isRoot ? 'pages/contact.html' : `${basePath}pages/contact.html` },
+        { name: 'Blogs', path: isRoot ? 'pages/blogs.html' : `${basePath}pages/blogs.html` },
+        { name: 'Books', path: isRoot ? 'pages/books.html' : `${basePath}pages/books.html` }
     ];
 
-    const logoLink = isRoot ? 'index.html' : '../index.html';
+    const logoLink = isRoot ? 'index.html' : `${basePath}index.html`;
     
     return `
         <nav class="navbar">

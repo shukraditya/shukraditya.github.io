@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Learning with JAX - Notes</title>
+    <link rel="stylesheet" href="../../../style.css">
+    <style>
+        /* JAX book page styles following the main design system */
+
+        /* Style all paragraphs in content-box */
+        .content-box p {
+            margin-bottom: 0.8rem;
+            color: var(--text-orange);
+            line-height: 1.6;
+        }
+
+        /* Style all strong elements */
+        .content-box strong {
+            color: var(--text-orange);
+        }
+
+        /* Style all links */
+        .content-box a {
+            color: var(--link-orange);
+            text-decoration: underline;
+        }
+
+        .content-box a:hover {
+            opacity: 0.7;
+        }
+
+        /* Book intro section */
+        .book-intro {
+            margin-top: 1.5rem;
+        }
+
+        .book-intro p {
+            margin-bottom: 0.8rem;
+            color: var(--text-orange);
+            line-height: 1.6;
+        }
+
+        .book-intro strong {
+            color: var(--text-orange);
+        }
+
+        .book-intro a {
+            color: var(--link-orange);
+            text-decoration: underline;
+        }
+
+        .book-intro a:hover {
+            opacity: 0.7;
+        }
+
+        /* Notes and content sections */
+        .book-notes {
+            margin-top: 2rem;
+        }
+
+        .notes-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed var(--border-orange);
+        }
+
+        .notes-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .notes-section h3 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--text-orange);
+            text-transform: lowercase;
+        }
+
+        .notes-section h3::first-letter {
+            text-transform: uppercase;
+        }
+
+        .notes-section p {
+            margin-bottom: 0.8rem;
+            color: var(--text-orange);
+            line-height: 1.6;
+        }
+
+        .notes-section ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1rem;
+        }
+
+        .notes-section ul li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .notes-section ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--text-orange);
+        }
+
+        .notes-section pre {
+            background: rgba(235, 219, 178, 0.1);
+            border: 1px solid var(--border-orange);
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .notes-section code {
+            background: rgba(235, 219, 178, 0.1);
+            padding: 0.2rem 0.4rem;
+            font-family: 'Courier New', monospace;
+            color: var(--text-orange);
+        }
+
+        .notes-section pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Progress tracking */
+        .reading-progress {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed var(--border-orange);
+        }
+
+        .progress-item {
+            margin-bottom: 0.8rem;
+            color: var(--text-orange);
+        }
+
+        .chapter-link {
+            color: var(--link-orange);
+            text-decoration: underline;
+        }
+
+        .chapter-link:hover {
+            opacity: 0.7;
+        }
+
+        .date-meta {
+            color: var(--text-orange);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected here -->
+    <div id="nav-placeholder"></div>
+
+    <main>
+        <section class="section hero" style="padding-top: 120px;">
+            <div class="content-box">
+                <h2 class="section-title">deep Learning with jax</h2>
+                <p>
+                    Notes and thoughts from <a href="https://www.manning.com/books/deep-learning-with-jax" target="_blank" rel="noopener">Deep Learning with JAX</a>. <br>
+                </p>
+                <hr class="dashed-line">
+                <div class="book-intro">
+                    <p>This is my accountability &amp; study page for the book <strong>Deep Learning with JAX</strong>.</p>
+                    <p>As I read and experiment, I'll jot down summaries, key ideas, and code snippets.</p>
+                </div>
+
+                <div class="reading-progress">
+                    <h3>chapters</h3>
+
+                    <div class="notes-section">
+                        <ul>
+                            <li><a href="chapter-1.html" class="chapter-link">chapter 1: introduction to jax</a></li>
+                            <li><a href="chapter-2.html" class="chapter-link">chapter 2: jax fundamentals</a></li>
+                            <li><a href="chapter-3.html" class="chapter-link">chapter 3: transformations in jax</a></li>
+                            <li><a href="chapter-4.html" class="chapter-link">chapter 4: neural networks with jax</a></li>
+                            <li><a href="chapter-5.html" class="chapter-link">chapter 5: optimization and training</a></li>
+                            <li><a href="chapter-6.html" class="chapter-link">chapter 6: convolutional neural networks</a></li>
+                            <li><a href="chapter-7.html" class="chapter-link">chapter 7: recurrent neural networks</a></li>
+                            <li><a href="chapter-8.html" class="chapter-link">chapter 8: advanced architectures</a></li>
+                            <li><a href="chapter-9.html" class="chapter-link">chapter 9: generative models</a></li>
+                            <li><a href="chapter-10.html" class="chapter-link">chapter 10: reinforcement learning</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer will be injected here -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../components/components.js"></script>
+    <script src="../../../script.js"></script>
+</body>
+</html>
