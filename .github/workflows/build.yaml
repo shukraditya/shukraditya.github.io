@@ -1,0 +1,33 @@
+name: Auto Convert Markdown (Python)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'markdowns/**' # Only trigger when files in markdowns/ change
+
+jobs:
+  convert_markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' # Use a modern Python version
+
+      - name: Install dependencies
+        # Install the Python markdown library and extensions
+        run: pip install markdown pymdown-extensions
+
+      - name: Run Markdown Conversion Script
+        run: python generate-html.py # 🚨 Execute the Python script
+
+      - name: Commit and Push generated HTML files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-generate HTML from markdown updates [ci skip]"
+          files: pages/ # Only commit changes found in the output directory

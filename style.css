@@ -334,6 +334,182 @@ a:hover {
     }
 }
 
+/* --- Admonition/Callout Styling (Following dark theme palette) --- */
+
+/* Main container with dark theme styling */
+.admonition {
+    /* Subtle dark background with orange tint */
+    background-color: rgba(235, 219, 178, 0.05);
+
+    /* Remove thick border, use subtle orange border instead */
+    border: 1px solid rgba(235, 219, 178, 0.2);
+    border-left: 4px solid var(--text-orange-bright);
+
+    border-radius: 6px;
+    margin: 1.5rem 0;
+    padding: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* The Title Section */
+.admonition-title {
+    /* Slightly darker header background */
+    background-color: rgba(235, 219, 178, 0.1);
+
+    padding: 0.75rem 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+
+    /* Orange title color to match theme */
+    color: var(--text-orange-bright);
+
+    /* Separator line in orange theme */
+    border-bottom: 1px solid rgba(235, 219, 178, 0.2);
+    border-radius: 6px 6px 0 0;
+}
+
+/* Add icon before title */
+.admonition-title::before {
+    content: "✎"; /* Pencil icon */
+    margin-right: 8px;
+    color: var(--text-orange-bright);
+}
+
+/* Content inside the callout */
+.admonition > p,
+.admonition > ul,
+.admonition > ol {
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    color: var(--text-orange);
+}
+
+.admonition li {
+    color: var(--text-orange);
+    margin-bottom: 0.3rem;
+}
+
+/* Different admonition types with orange-based colors */
+.admonition.note {
+    border-left-color: var(--text-orange-bright);
+}
+
+.admonition.note .admonition-title {
+    color: var(--text-orange-bright);
+}
+
+.admonition.warning {
+    border-left-color: #ffcc42; /* Warmer orange for warnings */
+}
+
+.admonition.warning .admonition-title {
+    color: #ffcc42;
+}
+
+.admonition.tip {
+    border-left-color: #ebdbb2; /* Lighter orange for tips */
+}
+
+.admonition.tip .admonition-title {
+    color: #ebdbb2;
+}
+
+.admonition.important {
+    border-left-color: #ff8c42; /* Brighter orange for important */
+}
+
+.admonition.important .admonition-title {
+    color: #ff8c42;
+}
+
+/* --- Code Block Styling (Following dark theme palette) --- */
+.codehilite {
+    /* Dark background with subtle orange tint */
+    background-color: rgba(235, 219, 178, 0.08);
+
+    /* Rounded corners and spacing */
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid var(--border-orange);
+
+    /* Font settings */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    color: var(--text-orange);
+}
+
+.codehilite pre {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+/* Regular code blocks */
+pre {
+    background: rgba(235, 219, 178, 0.08);
+    border: 1px solid var(--border-orange);
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border-radius: 6px;
+    color: var(--text-orange);
+}
+
+/* Inline code */
+code {
+    background: rgba(235, 219, 178, 0.15);
+    padding: 0.2rem 0.4rem;
+    font-family: 'Courier New', monospace;
+    color: var(--text-orange);
+    border-radius: 3px;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+}
+
+/* Markdown content styling */
+.content-box h1, .content-box h2, .content-box h3, .content-box h4, .content-box h5, .content-box h6 {
+    color: var(--text-orange);
+    margin: 1.5rem 0 1rem 0;
+    font-weight: bold;
+}
+
+.content-box h1 {
+    font-size: 1.8rem;
+    border-bottom: 1px dashed var(--border-orange);
+    padding-bottom: 0.5rem;
+}
+
+.content-box h2 {
+    font-size: 1.5rem;
+}
+
+.content-box h3 {
+    font-size: 1.3rem;
+}
+
+.content-box p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.content-box ul, .content-box ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.content-box li {
+    margin-bottom: 0.5rem;
+    color: var(--text-orange);
+}
+
 @media (max-width: 480px) {
     .content-box {
         padding: 1rem;
@@ -346,5 +522,26 @@ a:hover {
 
     body {
         font-size: 14px;
+    }
+
+    .admonition {
+        margin: 1rem 0;
+        padding: 0;
+    }
+
+    .admonition-title {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .admonition > p,
+    .admonition > ul,
+    .admonition > ol {
+        padding: 0.5rem 0.8rem;
+    }
+
+    pre, .codehilite {
+        padding: 0.8rem;
+        font-size: 0.85rem;
     }
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Title - Shukraditya Bose</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="{{CSS_PATH}}">
     <style>
         /* Add page-specific styles here if needed */
     </style>
@@ -14,17 +14,9 @@
     <div id="nav-placeholder"></div>
 
     <main>
-        <section class="section hero" style="min-height: 50vh; padding-top: 120px;">
+        <section class="section" style="padding-top: 120px;">
             <div class="content-box">
-                <h1 class="section-title">Page Title</h1>
-                <p>Page subtitle or description</p>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="content-box">
-                <h2 class="section-title">Content Section</h2>
-                <p>Your content goes here...</p>
+                {{CONTENT}}
             </div>
         </section>
     </main>
@@ -32,8 +24,8 @@
     <!-- Footer will be injected here -->
     <div id="footer-placeholder"></div>
 
-    <script src="../components/components.js"></script>
-    <script src="../script.js"></script>
+    <script src="{{COMPONENTS_PATH}}"></script>
+    <script src="{{SCRIPT_PATH}}"></script>
 </body>
 </html>
 
