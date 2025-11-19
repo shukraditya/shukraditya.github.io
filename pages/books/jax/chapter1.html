@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title - Shukraditya Bose</title>
+    <link rel="stylesheet" href="../../../style.css">
+    <style>
+        /* Add page-specific styles here if needed */
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected here -->
+    <div id="nav-placeholder"></div>
+
+    <main>
+        <section class="section" style="padding-top: 120px;">
+            <div class="content-box">
+                <h2>Installing</h2>
+<pre class="codehilite"><code>uv pip install jax numpy
+uv pip install 'jax[cuda12]'
+</code></pre>
+
+<h2>basics</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Acceleration comes from JIT compilation via XLA compiler
+- Optimises the computation graph
+- sequence of ops fused into single efficient computation
+- eliminate redundant computations</p>
+</div>
+<p>Possible ways to run the code:
+1. pure numpy
+2. jax on cpu
+3. jax jit compiled code on cpu
+4. jax on gpu
+5. jax jit compiled on gpu</p>
+<div class="admonition note">
+<p class="admonition-title">Auto vectorization</p>
+<p>converts single element fn to batch processing fn</p>
+</div>
+<p>follows the functional programming paradigm. not really OOPS oriented like PyTorch.
+no hidden states, everything visible. <a href="https://ericnormand.me/podcast/what-are-side-effects">Side effects</a> dont work with JIT.</p>
+<h2>jargon</h2>
+<p>XLA: Xcelerated Linear Algebra
+Autograd: compute derivatives of NumPy code. predecessor to jax
+JAX = XLA+Autograd</p>
+<h2>composable transformations</h2>
+<p>python+numpy code can be transformed.
+4 main transformations:
+1. autodiff
+2. jit compilation: jit uses XLA to compile and produce GPU/TPU-efficient code.
+3. auto-vectorization: <code>vmap()</code> single item -&gt; batch aka auto-batching. 
+4. parallelizing code: to run code on multiple accelerators via <code>pmap()</code> -&gt; SPMD (single-program multiple-data). <code>pmap()</code> compiles using XLA, replicates and executes on it's XLA device in parallel</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer will be injected here -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../../../components/components.js"></script>
+    <script src="../../../script.js"></script>
+</body>
+</html>
+
