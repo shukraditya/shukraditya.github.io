@@ -16,7 +16,7 @@
     <main>
         <section class="section" style="padding-top: 120px;">
             <div class="content-box">
-                <h2>Installing</h2>
+                <div class="back-nav"><a href="jax.html" class="back-link">← back to jax</a></div><h2>Installing</h2>
 <pre class="codehilite"><code>uv pip install jax numpy
 uv pip install 'jax[cuda12]'
 </code></pre>
@@ -52,6 +52,7 @@ JAX = XLA+Autograd</p>
 2. jit compilation: jit uses XLA to compile and produce GPU/TPU-efficient code.
 3. auto-vectorization: <code>vmap()</code> single item -&gt; batch aka auto-batching. 
 4. parallelizing code: to run code on multiple accelerators via <code>pmap()</code> -&gt; SPMD (single-program multiple-data). <code>pmap()</code> compiles using XLA, replicates and executes on it's XLA device in parallel</p>
+<p>tag-along notebook: <a href="https://github.com/shukraditya/jax-learning/blob/master/jax-1.ipynb">jax-learning-1</a></p>
             </div>
         </section>
     </main>
