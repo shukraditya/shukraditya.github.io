@@ -3,7 +3,7 @@ name: Auto Convert Markdown (Python)
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'markdowns/**' # Only trigger when files in markdowns/ change
 
