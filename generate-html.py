@@ -116,6 +116,21 @@ def process_directory(current_path, template_content):
 
         elif entry.is_file() and entry.suffix == '.md':
             try:
+                # Determine output path and filename
+                output_filename = entry.stem + '.html'
+                output_path = pages_dir / output_filename
+
+                # Check if HTML file already exists and is newer than markdown file
+                if output_path.exists():
+                    markdown_mtime = entry.stat().st_mtime
+                    html_mtime = output_path.stat().st_mtime
+
+                    if html_mtime > markdown_mtime:
+                        print(f"Skipped: {entry} -> {output_path} (HTML file is up-to-date)")
+                        continue
+                    else:
+                        print(f"Updating: {entry} -> {output_path} (markdown file is newer)")
+
                 with open(entry, 'r', encoding='utf-8') as f:
                     markdown_content = f.read()
 
@@ -129,9 +144,6 @@ def process_directory(current_path, template_content):
                 final_html = final_html.replace('{{CSS_PATH}}', css_path)
                 final_html = final_html.replace('{{COMPONENTS_PATH}}', components_path)
                 final_html = final_html.replace('{{SCRIPT_PATH}}', script_path)
-
-                output_filename = entry.stem + '.html'
-                output_path = pages_dir / output_filename
 
                 with open(output_path, 'w', encoding='utf-8') as f:
                     f.write(final_html)
