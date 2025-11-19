@@ -37,3 +37,7 @@ python+numpy code can be transformed.
 2. jit compilation: jit uses XLA to compile and produce GPU/TPU-efficient code.
 3. auto-vectorization: `vmap()` single item -> batch aka auto-batching. 
 4. parallelizing code: to run code on multiple accelerators via `pmap()` -> SPMD (single-program multiple-data). `pmap()` compiles using XLA, replicates and executes on it's XLA device in parallel
+
+
+
+tag-along notebook: [jax-learning-1](https://github.com/shukraditya/jax-learning/blob/master/jax-1.ipynb)

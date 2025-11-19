@@ -474,6 +474,24 @@ pre code {
     padding: 0;
 }
 
+/* Back navigation styling */
+.back-nav {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--border-orange);
+}
+
+.back-link {
+    color: var(--link-orange);
+    text-decoration: underline;
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+}
+
+.back-link:hover {
+    opacity: 0.7;
+}
+
 /* Markdown content styling */
 .content-box h1, .content-box h2, .content-box h3, .content-box h4, .content-box h5, .content-box h6 {
     color: var(--text-orange);

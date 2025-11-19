@@ -100,6 +100,29 @@ def calculate_script_path(current_path):
         depth = len(current_path.parts) + 1
         return "../" * depth + "script.js"
 
+def generate_back_link(current_path):
+    """Generate a back navigation link based on directory structure."""
+    if current_path == Path("") or len(current_path.parts) == 0:
+        # Root level, no back link
+        return ""
+
+    # Get the current directory name (where the file is located)
+    current_dir_name = current_path.name
+
+    # If we're at root level, link to index
+    if not current_dir_name:
+        back_text = "← back to home"
+        back_url = "../index.html"
+    else:
+        # Link to the current directory's HTML file (current-directory-name.html)
+        back_url = f"{current_dir_name}.html"
+
+        # Convert directory name to readable format
+        readable_name = current_dir_name.replace("-", " ").replace("_", " ")
+        back_text = f"← back to {readable_name}"
+
+    return f'<div class="back-nav"><a href="{back_url}" class="back-link">{back_text}</a></div>'
+
 def process_directory(current_path, template_content):
     """Recursively traverses the markdowns directory and generates HTML files."""
     markdown_dir = MARKDOWN_ROOT / current_path
@@ -136,11 +159,17 @@ def process_directory(current_path, template_content):
 
                 converted_html_body = convert_markdown_to_html(markdown_content)
 
+                # Generate back navigation link
+                back_link = generate_back_link(current_path)
+
+                # Add back link to the beginning of content
+                content_with_nav = back_link + converted_html_body
+
                 css_path = calculate_css_path(current_path)
                 components_path = calculate_components_path(current_path)
                 script_path = calculate_script_path(current_path)
 
-                final_html = template_content.replace(TEMPLATE_PLACEHOLDER, converted_html_body)
+                final_html = template_content.replace(TEMPLATE_PLACEHOLDER, content_with_nav)
                 final_html = final_html.replace('{{CSS_PATH}}', css_path)
                 final_html = final_html.replace('{{COMPONENTS_PATH}}', components_path)
                 final_html = final_html.replace('{{SCRIPT_PATH}}', script_path)
