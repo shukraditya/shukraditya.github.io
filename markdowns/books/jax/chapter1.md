@@ -39,5 +39,4 @@ python+numpy code can be transformed.
 4. parallelizing code: to run code on multiple accelerators via `pmap()` -> SPMD (single-program multiple-data). `pmap()` compiles using XLA, replicates and executes on it's XLA device in parallel
 
 
-
 tag-along notebook: [jax-learning-1](https://github.com/shukraditya/jax-learning/blob/master/jax-1.ipynb)
