@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'markdowns/**' # Only trigger when files in markdowns/ change
 
 jobs:
   convert_markdown:
