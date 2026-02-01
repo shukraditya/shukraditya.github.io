@@ -15,14 +15,16 @@ const navItems = [
 ---
 
 <nav class="fixed top-0 left-0 right-0 h-52px bg-paper/80 backdrop-blur-xl border-b border-border z-50">
-  <div class="max-w-content mx-auto px-4 sm:px-6 h-full flex items-center justify-between">
-    <div class="flex items-center gap-6 sm:gap-8">
-      <!-- Logo placeholder -->
-      <a href="/" class="flex items-center" aria-label="Home">
-        <div class="w-8 h-8 border border-border rounded flex items-center justify-center text-secondary font-display text-sm hover:border-accent hover:text-accent transition-none">
-          S
-        </div>
-      </a>
+  <div class="px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between relative">
+    <!-- Logo - far left -->
+    <a href="/" class="flex items-center" aria-label="Home">
+      <div class="w-8 h-8 border border-border rounded flex items-center justify-center text-secondary font-display text-sm hover:border-accent hover:text-accent transition-none">
+        S
+      </div>
+    </a>
+
+    <!-- Nav links - centered on screen -->
+    <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-4 sm:gap-6">
       {navItems.map((item) => (
         <a
           href={item.href}
@@ -32,6 +34,8 @@ const navItems = [
         </a>
       ))}
     </div>
+
+    <!-- Theme toggle - far right -->
     <ThemeToggle />
   </div>
 </nav>

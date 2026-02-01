@@ -52,10 +52,9 @@ const readTime = calculateReadTime(post.body);
               </svg>
               Back to Writing
             </a>
-            <h1 class="font-display text-2xl sm:text-display text-ink mb-3">
-              {post.data.title}
-            </h1>
-            <div class="flex flex-wrap gap-2 items-center font-sans text-meta text-secondary">
+
+            <!-- Metadata above title, smaller text -->
+            <div class="flex flex-wrap gap-2 items-center font-sans text-sm text-secondary mb-3">
               <time class="tabular-nums">{formatDate(post.data.date)}</time>
               <span>·</span>
               <span>{readTime} min read</span>
@@ -66,6 +65,10 @@ const readTime = calculateReadTime(post.body);
                 </>
               )}
             </div>
+
+            <h1 class="font-display text-2xl sm:text-display text-ink">
+              {post.data.title}
+            </h1>
           </header>
 
           <div class="prose prose-lg font-charter text-ink leading-relaxed">

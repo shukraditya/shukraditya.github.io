@@ -30,7 +30,7 @@ export default {
         '52px': '52px',
       },
       maxWidth: {
-        'content': '800px',
+        'content': '680px',
       },
       transitionDuration: {
         '0': '0ms',
