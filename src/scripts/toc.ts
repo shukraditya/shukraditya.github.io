@@ -8,8 +8,8 @@ function initTOC() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const headingsArray = Array.from(headings);
   let activeId: string | null = null;
-  let isScrollingFromClick = false;
-  let scrollTimeout: number | null = null;
+  let lastClickedId: string | null = null;
+  let clickTimeout: number | null = null;
 
   // Handle click events for smooth scroll
   tocLinks.forEach((link) => {
@@ -23,39 +23,48 @@ function initTOC() {
       if (target) {
         e.preventDefault();
 
-        // Disable observer during programmatic scroll
-        isScrollingFromClick = true;
-        if (scrollTimeout) window.clearTimeout(scrollTimeout);
-
-        // Set the clicked link as active immediately
+        // Track which section was clicked and set it active immediately
+        lastClickedId = targetId;
         activeId = targetId;
         updateActiveLink(activeId);
 
-        target.scrollIntoView({
-          behavior: prefersReducedMotion ? 'auto' : 'smooth',
-        });
+        // Clear any existing timeout
+        if (clickTimeout) window.clearTimeout(clickTimeout);
+
+        // Reset lastClickedId after scroll animation completes
+        clickTimeout = window.setTimeout(() => {
+          lastClickedId = null;
+        }, prefersReducedMotion ? 100 : 1000);
+
+        // Calculate scroll position accounting for fixed navbar (52px + padding)
+        const navHeight = 80; // 52px nav + some padding
+        const targetTop = target.getBoundingClientRect().top + window.scrollY;
+        const scrollTo = targetTop - navHeight;
+
+        // Only scroll if target is not already reasonably in view
+        const targetRect = target.getBoundingClientRect();
+        const isInView = targetRect.top >= navHeight && targetRect.bottom <= window.innerHeight;
+
+        if (!isInView) {
+          window.scrollTo({
+            top: scrollTo,
+            behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          });
+        }
 
         // Update URL hash without jumping
         history.pushState(null, '', href);
-
-        // Re-enable observer after scroll animation completes
-        scrollTimeout = window.setTimeout(() => {
-          isScrollingFromClick = false;
-        }, prefersReducedMotion ? 0 : 800);
       }
     });
   });
 
-  // IntersectionObserver to highlight active section
+  // IntersectionObserver to highlight active section during manual scroll
   const observerOptions = {
     rootMargin: '-10% 0px -60% 0px',
     threshold: 0,
   };
 
   const observer = new IntersectionObserver((entries) => {
-    // Skip updates during programmatic scrolls
-    if (isScrollingFromClick) return;
-
     // Find all intersecting entries and sort by DOM position
     const intersecting = entries
       .filter((e) => e.isIntersecting)
@@ -65,6 +74,13 @@ function initTOC() {
 
     if (intersecting.length > 0) {
       const newActiveId = intersecting[0].target.id;
+
+      // If we just clicked a link, only update if this is the clicked section
+      // This prevents the highlight from jumping to the next section
+      if (lastClickedId && newActiveId !== lastClickedId) {
+        return;
+      }
+
       if (newActiveId !== activeId) {
         activeId = newActiveId;
         updateActiveLink(activeId);
