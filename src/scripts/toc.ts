@@ -36,21 +36,20 @@ function initTOC() {
           lastClickedId = null;
         }, prefersReducedMotion ? 100 : 1000);
 
-        // Calculate scroll position accounting for fixed navbar (52px + padding)
-        const navHeight = 80; // 52px nav + some padding
-        const targetTop = target.getBoundingClientRect().top + window.scrollY;
-        const scrollTo = targetTop - navHeight;
-
-        // Only scroll if target is not already reasonably in view
+        // Calculate scroll position to center the heading in viewport
+        const navHeight = 52;
         const targetRect = target.getBoundingClientRect();
-        const isInView = targetRect.top >= navHeight && targetRect.bottom <= window.innerHeight;
+        const targetTop = targetRect.top + window.scrollY;
+        const viewportHeight = window.innerHeight;
+        const headingHeight = targetRect.height;
 
-        if (!isInView) {
-          window.scrollTo({
-            top: scrollTo,
-            behavior: prefersReducedMotion ? 'auto' : 'smooth',
-          });
-        }
+        // Center the heading in the viewport, accounting for navbar
+        const scrollTo = targetTop - navHeight - (viewportHeight - navHeight - headingHeight) / 2;
+
+        window.scrollTo({
+          top: Math.max(0, scrollTo),
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        });
 
         // Update URL hash without jumping
         history.pushState(null, '', href);
