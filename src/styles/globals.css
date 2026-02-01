@@ -138,3 +138,68 @@ pre {
   0% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+/* KaTeX Math - E-ink Styling */
+.katex {
+  font-size: 1.1em;
+  color: var(--text);
+}
+
+.katex-display {
+  margin: 1.5em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5em 0;
+}
+
+.katex-display .katex {
+  font-size: 1.15em;
+}
+
+/* Ensure math doesn't break layout on mobile */
+.katex-html {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+/* Blockquote styling for the blog */
+blockquote {
+  border-left: 2px solid var(--secondary);
+  padding-left: 1rem;
+  margin-left: 0;
+  font-style: italic;
+  color: var(--secondary);
+}
+
+/* Prose content styling */
+.prose h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose ul, .prose ol {
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin: 0.5rem 0;
+}
+
+/* Responsive KaTeX */
+@media (max-width: 640px) {
+  .katex-display {
+    font-size: 0.9em;
+  }
+
+  .katex-display .katex {
+    font-size: 1em;
+  }
+}
