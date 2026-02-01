@@ -7,11 +7,11 @@ import Footer from '../../components/Footer.astro';
 <BaseLayout title="About">
   <Nav current="about" />
 
-  <main class="pt-32 pb-16 max-w-content mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-12">
+  <main class="pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8 md:gap-12">
       {/* Profile Image */}
       <div class="shrink-0">
-        <div class="w-full aspect-square bg-card overflow-hidden">
+        <div class="w-32 md:w-full aspect-square bg-card overflow-hidden mx-auto md:mx-0">
           <img
             src="/profile.jpg"
             alt="Profile"
@@ -26,9 +26,9 @@ import Footer from '../../components/Footer.astro';
 
       {/* Bio Content */}
       <div>
-        <h1 class="font-display text-display text-ink mb-6">About</h1>
+        <h1 class="font-display text-2xl sm:text-display text-ink mb-4 sm:mb-6">About</h1>
 
-        <div class="prose prose-lg font-charter text-ink leading-relaxed space-y-6">
+        <div class="prose prose-base sm:prose-lg font-charter text-ink leading-relaxed space-y-4 sm:space-y-6">
           <p>
             I'm a final-year Computer Science student based in India, with a focus on
             machine learning, deep learning, and production ML systems. My work spans
@@ -49,11 +49,11 @@ import Footer from '../../components/Footer.astro';
         </div>
 
         {/* Experience Table */}
-        <div class="mt-12">
-          <h2 class="font-sans text-label uppercase tracking-wider text-secondary mb-6">
+        <div class="mt-10 sm:mt-12">
+          <h2 class="font-sans text-label uppercase tracking-wider text-secondary mb-4 sm:mb-6">
             Experience
           </h2>
-          <table class="w-full font-sans text-meta">
+          <table class="w-full font-sans text-sm sm:text-meta">
             <tbody class="divide-y divide-border">
               <tr>
                 <td class="py-3 text-ink">Machine Learning Intern</td>
@@ -72,11 +72,11 @@ import Footer from '../../components/Footer.astro';
         </div>
 
         {/* Education Table */}
-        <div class="mt-8">
-          <h2 class="font-sans text-label uppercase tracking-wider text-secondary mb-6">
+        <div class="mt-6 sm:mt-8">
+          <h2 class="font-sans text-label uppercase tracking-wider text-secondary mb-4 sm:mb-6">
             Education
           </h2>
-          <table class="w-full font-sans text-meta">
+          <table class="w-full font-sans text-sm sm:text-meta">
             <tbody class="divide-y divide-border">
               <tr>
                 <td class="py-3 text-ink">B.Tech Computer Science</td>

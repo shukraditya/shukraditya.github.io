@@ -20,15 +20,15 @@ const sortedPosts = writingPosts
 <BaseLayout title="Home">
   <Nav current="home" />
 
-  <main class="pt-32 pb-16 max-w-content mx-auto px-6">
+  <main class="pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
     {/* Hero Section */}
-    <section class="mb-20">
-      <h1 class="font-charter font-bold text-hero text-ink mb-6">
+    <section class="mb-16 sm:mb-20">
+      <h1 class="font-charter font-bold text-3xl sm:text-hero text-ink mb-4 sm:mb-6">
         Your Name
       </h1>
 
-      <blockquote class="border-l-2 border-secondary pl-6 py-2 mb-8">
-        <p class="font-display italic text-xl text-secondary leading-relaxed">
+      <blockquote class="border-l-2 border-secondary pl-4 sm:pl-6 py-2 mb-6 sm:mb-8">
+        <p class="font-display italic text-lg sm:text-xl text-secondary leading-relaxed">
           "A quote or tagline that captures your perspective. Something thoughtful and concise."
         </p>
       </blockquote>
@@ -37,7 +37,7 @@ const sortedPosts = writingPosts
     </section>
 
     {/* Separator */}
-    <div class="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-16"></div>
+    <div class="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-12 sm:mb-16"></div>
 
     {/* Recent Writing Section */}
     <section>
