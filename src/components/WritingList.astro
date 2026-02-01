@@ -1,0 +1,39 @@
+---
+import type { WritingPost } from '../types';
+
+interface Props {
+  posts: WritingPost[];
+  showCount?: number;
+}
+
+const { posts, showCount } = Astro.props;
+
+const displayPosts = showCount ? posts.slice(0, showCount) : posts;
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+}
+---
+
+<div class="divide-y divide-border">
+  {displayPosts.map((post) => (
+    <a
+      href={`/writing/${post.slug}`}
+      class="block py-10 -mx-6 px-6 hover:bg-accent/5 transition-none"
+    >
+      <div class="flex items-baseline justify-between gap-4 mb-2">
+        <h3 class="font-charter text-xl text-ink">{post.title}</h3>
+        <time class="font-sans text-meta text-secondary tabular-nums shrink-0">
+          {formatDate(post.date)}
+        </time>
+      </div>
+      <p class="font-charter text-secondary text-lg leading-relaxed">
+        {post.description}
+      </p>
+    </a>
+  ))}
+</div>

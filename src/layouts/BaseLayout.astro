@@ -1,0 +1,42 @@
+---
+import '../styles/globals.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "A narrative blog with E-ink inspired design" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script is:inline>
+    // Theme initialization - prevent flash
+    const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  </script>
+</head>
+<body class="min-h-screen bg-paper text-ink">
+  <div id="eink-flash" class="eink-flash"></div>
+  <slot />
+  <script>
+    // E-ink flash on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const flash = document.getElementById('eink-flash');
+      if (flash) {
+        flash.classList.add('active');
+        setTimeout(() => flash.classList.remove('active'), 50);
+      }
+    });
+  </script>
+</body>
+</html>

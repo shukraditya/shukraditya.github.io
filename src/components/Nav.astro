@@ -1,0 +1,31 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  current?: 'home' | 'writing' | 'about';
+}
+
+const { current } = Astro.props;
+
+const navItems = [
+  { href: '/', label: 'Home', id: 'home' },
+  { href: '/writing', label: 'Writing', id: 'writing' },
+  { href: '/about', label: 'About', id: 'about' },
+];
+---
+
+<nav class="fixed top-0 left-0 right-0 h-52px bg-paper/80 backdrop-blur-xl border-b border-border z-50">
+  <div class="max-w-content mx-auto px-6 h-full flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class={`text-label font-sans uppercase tracking-wider text-secondary hover:text-ink transition-none ${current === item.id ? 'text-ink font-medium' : ''}`}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+    <ThemeToggle />
+  </div>
+</nav>
