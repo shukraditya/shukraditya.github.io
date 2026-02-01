@@ -29,3 +29,8 @@
 |tailwind-responsive=mobile-first(sm:prefix),sensible-breakpoints
 |e-ink-ux=no-motion-respects-prefers-reduced-motion,flash-simulates-ink-refresh
 |astro-view-transitions=not-used-here-prefer-custom-flash-effect
+|toc-sidebar=sticky(right,100px-offset),240px-width,hidden-on-mobile(lg:block),nested-H2/H3-with-indent
+|toc-active-highlight=IntersectionObserver(-100px-0px--66%),instant-no-transition
+|header-metadata=date(tabular-nums)·readtime·author(italic-accent),backlink-with-chevron-above-title
+|logo-placeholder=top-left-nav,bordered-square(w-8-h-8),hover-accent-state,initial-letter-S
+|content-schema=writing-collection,author-field-optional,frontmatter-with-Zod

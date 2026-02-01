@@ -1,0 +1,34 @@
+---
+interface Props {
+  headings: Array<{
+    depth: number;
+    slug: string;
+    text: string;
+  }>;
+}
+
+const { headings } = Astro.props;
+---
+
+<nav class="toc-sidebar sticky top-[100px] max-h-[calc(100vh-140px)] overflow-y-auto">
+  <h2 class="font-sans text-label uppercase tracking-wider text-secondary mb-3">
+    On This Page
+  </h2>
+  <ul class="space-y-1 border-l border-border">
+    {
+      headings.map((heading) => (
+        <li class={heading.depth === 3 ? 'pl-4' : ''}>
+          <a
+            href={`#${heading.slug}`}
+            class="toc-link block py-1 pr-2 font-sans text-sm text-secondary hover:text-accent transition-none"
+            data-slug={heading.slug}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<script src="../scripts/toc.ts"></script>
