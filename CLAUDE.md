@@ -34,3 +34,6 @@
 |header-metadata=date(tabular-nums)·readtime·author(italic-accent),backlink-with-chevron-above-title
 |logo-placeholder=top-left-nav,bordered-square(w-8-h-8),hover-accent-state,initial-letter-S
 |content-schema=writing-collection,author-field-optional,frontmatter-with-Zod
+|toc-scroll-to-center=always-scroll-on-click,no-isInView-check,center-heading-in-viewport:targetTop-navHeight-(viewportHeight-navHeight-headingHeight)/2
+|toc-highlight-persistence=track-lastClickedId,set-active-immediately,observer-ignores-others-during-scroll,timeout-reset-after-scroll(prefersReducedMotion?100:1000)
+|toc-observer-pattern=IntersectionObserver(-10%-0px--60%),sort-by-DOM-position,skip-if-lastClickedId-mismatch
