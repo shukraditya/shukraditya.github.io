@@ -18,9 +18,10 @@ const sortedPosts = writingPosts
 ---
 
 <BaseLayout title="Home">
-  <Nav current="home" />
+  <div class="min-h-screen flex flex-col">
+    <Nav current="home" />
 
-  <main class="pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
+    <main class="flex-1 pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
     {/* Hero Section */}
     <section class="mb-16 sm:mb-20">
       <h1 class="font-charter font-bold text-3xl sm:text-hero text-ink mb-4 sm:mb-6">
@@ -52,5 +53,6 @@ const sortedPosts = writingPosts
     </section>
   </main>
 
-  <Footer />
+    <Footer />
+  </div>
 </BaseLayout>

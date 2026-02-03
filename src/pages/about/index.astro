@@ -5,9 +5,10 @@ import Footer from '../../components/Footer.astro';
 ---
 
 <BaseLayout title="About">
-  <Nav current="about" />
+  <div class="min-h-screen flex flex-col">
+    <Nav current="about" />
 
-  <main class="pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
+    <main class="flex-1 pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
     <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8 md:gap-12">
       {/* Profile Image */}
       <div class="shrink-0">
@@ -89,5 +90,6 @@ import Footer from '../../components/Footer.astro';
     </div>
   </main>
 
-  <Footer />
+    <Footer />
+  </div>
 </BaseLayout>
