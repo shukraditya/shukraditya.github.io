@@ -173,24 +173,34 @@ blockquote {
 }
 
 /* Prose content styling */
+.prose p {
+  margin-bottom: 1.25rem;
+}
+
 .prose h2 {
   font-size: 1.5rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .prose h3 {
   font-size: 1.25rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
 .prose ul, .prose ol {
   padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .prose li {
   margin: 0.5rem 0;
+}
+
+.prose blockquote {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Responsive KaTeX */
