@@ -17,8 +17,8 @@ const nodes = posts
   .map((post, i) => ({
     id: post.slug,
     title: post.data.title,
-    x: 350 + 200 * Math.cos((i * 2 * Math.PI) / Math.max(posts.length, 1)),
-    y: 175 + 100 * Math.sin((i * 2 * Math.PI) / Math.max(posts.length, 1)),
+    x: 170 + 120 * Math.cos((i * 2 * Math.PI) / Math.max(posts.length, 1)),
+    y: 90 + 60 * Math.sin((i * 2 * Math.PI) / Math.max(posts.length, 1)),
   }));
 
 // Create edges from wiki-links
@@ -37,20 +37,28 @@ const edgesData = JSON.stringify(edges);
 
 <div class="garden-graph" data-nodes={nodesData} data-edges={edgesData}>
   <canvas
-    width="700"
-    height="350"
-    class="w-full h-auto cursor-pointer rounded-sm border border-card bg-paper"
-    aria-label="Garden graph showing all posts and their connections"
+    width="340"
+    height="380"
+    class="w-full h-auto cursor-grab rounded-sm border border-card bg-paper active:cursor-grabbing"
+    aria-label="Garden graph showing all posts and their connections. Scroll to zoom, drag to pan."
   ></canvas>
-  <div class="graph-tooltip absolute hidden pointer-events-none z-50 bg-card border border-ink/10 px-2 py-1 text-xs font-sans rounded-sm shadow-sm"></div>
+  <div class="graph-controls absolute bottom-2 right-2 flex gap-1">
+    <button class="zoom-btn zoom-out px-2 py-1 text-xs font-sans bg-card border border-ink/10 rounded-sm hover:bg-ink/5 transition-colors" aria-label="Zoom out">−</button>
+    <button class="zoom-btn zoom-in px-2 py-1 text-xs font-sans bg-card border border-ink/10 rounded-sm hover:bg-ink/5 transition-colors" aria-label="Zoom in">+</button>
+    <button class="zoom-btn zoom-reset px-2 py-1 text-xs font-sans bg-card border border-ink/10 rounded-sm hover:bg-ink/5 transition-colors" aria-label="Reset view">⟲</button>
+  </div>
 </div>
 
 <style>
   .garden-graph {
     position: relative;
   }
-  .graph-tooltip {
-    max-width: 200px;
+  .graph-controls {
+    opacity: 0;
+    transition: opacity 0ms;
+  }
+  .garden-graph:hover .graph-controls {
+    opacity: 1;
   }
 </style>
 
@@ -69,10 +77,18 @@ const edgesData = JSON.stringify(edges);
     target: string;
   }
 
+  interface ViewTransform {
+    scale: number;
+    translateX: number;
+    translateY: number;
+  }
+
   function initGardenGraph(container: HTMLElement) {
     const canvas = container.querySelector('canvas');
-    const tooltip = container.querySelector('.graph-tooltip');
-    if (!canvas || !tooltip) return;
+    const zoomInBtn = container.querySelector('.zoom-in');
+    const zoomOutBtn = container.querySelector('.zoom-out');
+    const zoomResetBtn = container.querySelector('.zoom-reset');
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -93,6 +109,7 @@ const edgesData = JSON.stringify(edges);
       node: getComputedStyle(document.documentElement).getPropertyValue('--color-ink').trim() || '#2D2D2D',
       nodeHover: getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#0066CC',
       edge: getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim() || '#6B6B6B',
+      label: getComputedStyle(document.documentElement).getPropertyValue('--color-ink').trim() || '#2D2D2D',
     };
 
     // Handle dark mode
@@ -100,23 +117,38 @@ const edgesData = JSON.stringify(edges);
     if (isDark) {
       colors.node = '#E5E5E5';
       colors.edge = '#888888';
+      colors.label = '#E5E5E5';
     }
 
     let animationId: number;
     let hoveredNode: GraphNode | null = null;
     let isDragging = false;
+    let isPanning = false;
     let dragNode: GraphNode | null = null;
+    let lastMousePos = { x: 0, y: 0 };
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    // View transform for zoom/pan
+    const transform: ViewTransform = {
+      scale: 1,
+      translateX: 0,
+      translateY: 0,
+    };
+
     // Force simulation parameters
-    const centerX = 350;
-    const centerY = 175;
-    const nodeRadius = 6;
-    const repulsionStrength = 2000;
-    const springLength = 120;
-    const springStrength = 0.003;
-    const centerGravity = 0.0005;
+    const centerX = 170;
+    const centerY = 190;
+    const nodeRadius = 5;
+    const repulsionStrength = 1000;
+    const springLength = 80;
+    const springStrength = 0.005;
+    const centerGravity = 0.001;
     const damping = 0.92;
+
+    // Zoom limits
+    const MIN_ZOOM = 0.5;
+    const MAX_ZOOM = 3;
+    const LARGE_LABEL_THRESHOLD = 1.5;
 
     function updateForces() {
       if (prefersReducedMotion && !isDragging) return;
@@ -130,7 +162,7 @@ const edgesData = JSON.stringify(edges);
           const dy = nodeA.y - nodeB.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist > 0 && dist < 150) {
+          if (dist > 0 && dist < 100) {
             const force = repulsionStrength / (dist * dist);
             const fx = (dx / dist) * force;
             const fy = (dy / dist) * force;
@@ -182,18 +214,38 @@ const edgesData = JSON.stringify(edges);
           node.y += node.vy;
         }
 
-        // Keep within bounds
-        node.x = Math.max(nodeRadius, Math.min(700 - nodeRadius, node.x));
-        node.y = Math.max(nodeRadius, Math.min(350 - nodeRadius, node.y));
+        // Keep within bounds (larger canvas for panning)
+        node.x = Math.max(nodeRadius, Math.min(340 - nodeRadius, node.x));
+        node.y = Math.max(nodeRadius, Math.min(380 - nodeRadius, node.y));
       }
     }
 
+    function worldToScreen(x: number, y: number): { x: number; y: number } {
+      return {
+        x: x * transform.scale + transform.translateX,
+        y: y * transform.scale + transform.translateY,
+      };
+    }
+
+    function screenToWorld(x: number, y: number): { x: number; y: number } {
+      return {
+        x: (x - transform.translateX) / transform.scale,
+        y: (y - transform.translateY) / transform.scale,
+      };
+    }
+
     function draw() {
-      ctx.clearRect(0, 0, 700, 350);
+      ctx.clearRect(0, 0, 340, 380);
+
+      ctx.save();
+
+      // Apply transform
+      ctx.translate(transform.translateX, transform.translateY);
+      ctx.scale(transform.scale, transform.scale);
 
       // Draw edges
       ctx.strokeStyle = colors.edge;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1 / transform.scale;
       ctx.globalAlpha = 0.3;
 
       for (const edge of edges) {
@@ -221,12 +273,50 @@ const edgesData = JSON.stringify(edges);
           ctx.beginPath();
           ctx.arc(node.x, node.y, nodeRadius + 3, 0, Math.PI * 2);
           ctx.strokeStyle = colors.nodeHover;
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 2 / transform.scale;
           ctx.globalAlpha = 0.5;
           ctx.stroke();
           ctx.globalAlpha = 1;
         }
       }
+
+      // Draw label only for hovered node
+      if (hoveredNode) {
+        const fontSize = transform.scale >= LARGE_LABEL_THRESHOLD ? 12 : 10;
+        ctx.font = `${fontSize}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+
+        const labelX = hoveredNode.x;
+        const labelY = hoveredNode.y - nodeRadius - 10 / transform.scale;
+
+        // Truncate title if too long
+        let title = hoveredNode.title;
+        if (title.length > 25) {
+          title = title.slice(0, 22) + '...';
+        }
+
+        // Measure text for background
+        const metrics = ctx.measureText(title);
+        const textWidth = metrics.width;
+        const textHeight = fontSize / transform.scale;
+        const padding = 4 / transform.scale;
+
+        // Draw semi-transparent background pill
+        ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(249, 249, 249, 0.95)';
+        ctx.fillRect(
+          labelX - textWidth / 2 - padding,
+          labelY - textHeight - padding,
+          textWidth + padding * 2,
+          textHeight + padding * 2
+        );
+
+        // Draw text
+        ctx.fillStyle = colors.label;
+        ctx.fillText(title, labelX, labelY);
+      }
+
+      ctx.restore();
     }
 
     function animate() {
@@ -235,91 +325,135 @@ const edgesData = JSON.stringify(edges);
       animationId = requestAnimationFrame(animate);
     }
 
+    // Zoom functions
+    function zoomAt(screenX: number, screenY: number, delta: number) {
+      const newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, transform.scale + delta));
+
+      // Proper zoom-to-mouse: adjust translate so mouse stays over same world point
+      const worldX = (screenX - transform.translateX) / transform.scale;
+      const worldY = (screenY - transform.translateY) / transform.scale;
+
+      transform.translateX = screenX - worldX * newScale;
+      transform.translateY = screenY - worldY * newScale;
+      transform.scale = newScale;
+    }
+
+    function resetZoom() {
+      transform.scale = 1;
+      transform.translateX = 0;
+      transform.translateY = 0;
+    }
+
     // Mouse interaction
     function getMousePos(evt: MouseEvent): { x: number; y: number } {
       const rect = canvas.getBoundingClientRect();
-      const scaleX = 700 / rect.width;
-      const scaleY = 350 / rect.height;
+      const scaleX = 340 / rect.width;
+      const scaleY = 380 / rect.height;
       return {
         x: (evt.clientX - rect.left) * scaleX,
         y: (evt.clientY - rect.top) * scaleY,
       };
     }
 
-    function findNodeAt(pos: { x: number; y: number }): GraphNode | null {
+    function findNodeAtScreenPos(screenPos: { x: number; y: number }): GraphNode | null {
+      const worldPos = screenToWorld(screenPos.x, screenPos.y);
       for (const node of nodes) {
-        const dx = pos.x - node.x;
-        const dy = pos.y - node.y;
+        const dx = worldPos.x - node.x;
+        const dy = worldPos.y - node.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < nodeRadius + 5) {
+        if (dist < (nodeRadius + 5) / transform.scale) {
           return node;
         }
       }
       return null;
     }
 
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const pos = getMousePos(e);
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      zoomAt(pos.x, pos.y, delta);
+    }, { passive: false });
+
     canvas.addEventListener('mousemove', (e) => {
       const pos = getMousePos(e);
 
+      if (isPanning) {
+        const dx = pos.x - lastMousePos.x;
+        const dy = pos.y - lastMousePos.y;
+        transform.translateX += dx;
+        transform.translateY += dy;
+        lastMousePos = pos;
+        return;
+      }
+
       if (isDragging && dragNode) {
-        dragNode.x = pos.x;
-        dragNode.y = pos.y;
+        const worldPos = screenToWorld(pos.x, pos.y);
+        dragNode.x = worldPos.x;
+        dragNode.y = worldPos.y;
         dragNode.vx = 0;
         dragNode.vy = 0;
         return;
       }
 
-      const node = findNodeAt(pos);
+      const node = findNodeAtScreenPos(pos);
 
       if (node !== hoveredNode) {
         hoveredNode = node;
-        canvas.style.cursor = node ? 'pointer' : 'default';
-
-        if (node) {
-          tooltip.textContent = node.title;
-          tooltip.classList.remove('hidden');
-        } else {
-          tooltip.classList.add('hidden');
-        }
-      }
-
-      if (hoveredNode) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = 700 / rect.width;
-        const scaleY = 350 / rect.height;
-        tooltip.style.left = `${(hoveredNode.x / scaleX) + 10}px`;
-        tooltip.style.top = `${(hoveredNode.y / scaleY) - 30}px`;
+        canvas.style.cursor = node ? 'pointer' : (isPanning ? 'grabbing' : 'grab');
       }
     });
 
     canvas.addEventListener('mousedown', (e) => {
       const pos = getMousePos(e);
-      const node = findNodeAt(pos);
+      const node = findNodeAtScreenPos(pos);
+
       if (node) {
         isDragging = true;
         dragNode = node;
+      } else {
+        isPanning = true;
+        lastMousePos = pos;
+        canvas.style.cursor = 'grabbing';
       }
     });
 
     canvas.addEventListener('mouseup', () => {
       isDragging = false;
+      isPanning = false;
       dragNode = null;
+      canvas.style.cursor = 'grab';
     });
 
     canvas.addEventListener('mouseleave', () => {
       hoveredNode = null;
       tooltip.classList.add('hidden');
       isDragging = false;
+      isPanning = false;
       dragNode = null;
+      canvas.style.cursor = 'grab';
     });
 
     canvas.addEventListener('click', (e) => {
-      if (isDragging) return;
+      if (isDragging || isPanning) return;
       const pos = getMousePos(e);
-      const node = findNodeAt(pos);
+      const node = findNodeAtScreenPos(pos);
       if (node) {
         window.location.href = `/writing/${node.id}`;
       }
+    });
+
+    // Control buttons
+    zoomInBtn?.addEventListener('click', () => {
+      zoomAt(170, 190, 0.3);
+    });
+
+    zoomOutBtn?.addEventListener('click', () => {
+      zoomAt(170, 190, -0.3);
+    });
+
+    zoomResetBtn?.addEventListener('click', () => {
+      resetZoom();
     });
 
     // Start animation
