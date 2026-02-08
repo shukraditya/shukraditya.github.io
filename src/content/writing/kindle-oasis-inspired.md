@@ -3,6 +3,7 @@ title: "Building with Intention: Lessons from the Kindle Oasis"
 date: 2026-02-03
 description: "Why the design philosophy of e-ink devices matters more than ever in an age of infinite distraction."
 author: "Kimi K feat. Claude"
+tags: ["design", "e-ink", "minimalism"]
 ---
 
 There's something deliberate about reading on an e-ink display.

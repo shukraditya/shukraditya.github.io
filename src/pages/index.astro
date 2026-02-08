@@ -1,58 +1,94 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import SocialIcons from '../components/SocialIcons.astro';
-import WritingList from '../components/WritingList.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import SocialIcons from "../components/SocialIcons.astro";
+import WritingList from "../components/WritingList.astro";
+import GardenGraph from "../components/GardenGraph.astro";
+import { getCollection } from "astro:content";
 
-const writingPosts = await getCollection('writing', ({ data }) => !data.draft);
+const writingPosts = await getCollection("writing", ({ data }) => !data.draft);
 const sortedPosts = writingPosts
-  .map(post => ({
-    slug: post.slug,
-    title: post.data.title,
-    date: post.data.date,
-    description: post.data.description,
-  }))
-  .sort((a, b) => b.date.getTime() - a.date.getTime());
+    .map((post) => ({
+        slug: post.slug,
+        title: post.data.title,
+        date: post.data.date,
+        description: post.data.description,
+    }))
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
 ---
 
 <BaseLayout title="Home">
-  <div class="min-h-screen flex flex-col">
-    <Nav current="home" />
+    <div class="min-h-screen flex flex-col">
+        <Nav current="home" />
 
-    <main class="flex-1 pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
-    {/* Hero Section */}
-    <section class="mb-16 sm:mb-20">
-      <h1 class="font-charter font-bold text-3xl sm:text-hero text-ink mb-4 sm:mb-6">
-        Shukraditya Bose
-      </h1>
+        <main
+            class="flex-1 pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6"
+        >
+            {/* Hero Section */}
+            <section class="mb-16 sm:mb-20">
+                <h1
+                    class="font-charter font-bold text-3xl sm:text-hero text-ink mb-4 sm:mb-6"
+                >
+                    Shukraditya Bose
+                </h1>
 
-      <blockquote class="border-l-2 border-secondary pl-4 sm:pl-6 py-2 mb-6 sm:mb-8">
-        <p class="font-display italic text-lg sm:text-xl text-secondary leading-relaxed">
-          "The future is conditionally independent of the past, given the present."
-        </p>
-      </blockquote>
+                <blockquote
+                    class="border-l-2 border-secondary pl-4 sm:pl-6 py-2 mb-6 sm:mb-8"
+                >
+                    <p
+                        class="font-display italic text-lg sm:text-xl text-secondary leading-relaxed"
+                    >
+                        "The future is conditionally independent of the past,
+                        given the present."
+                    </p>
+                </blockquote>
 
-      <SocialIcons />
-    </section>
+                <SocialIcons />
+            </section>
 
-    {/* Separator */}
-    <div class="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-12 sm:mb-16"></div>
+            {/* Separator */}
+            <div
+                class="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-12 sm:mb-16"
+            >
+            </div>
 
-    {/* Recent Writing Section */}
-    <section>
-      <div class="flex items-baseline justify-between mb-6">
-        <span class="font-sans text-label uppercase tracking-wider text-secondary">Writing</span>
-        <a href="/writing" class="font-sans text-meta text-accent hover:underline">
-          View all
-        </a>
-      </div>
+            {/* Garden Graph - Hidden on mobile */}
+            <section class="hidden sm:block mb-12 sm:mb-16">
+                <div class="flex items-baseline justify-between mb-4">
+                    <span
+                        class="font-sans text-label uppercase tracking-wider text-secondary"
+                        >My Little Garden</span
+                    >
+                </div>
+                <GardenGraph posts={writingPosts} />
+            </section>
 
-      <WritingList posts={sortedPosts} showCount={3} />
-    </section>
-  </main>
+            {/* Separator */}
+            <div
+                class="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-12 sm:mb-16 hidden sm:block"
+            >
+            </div>
 
-    <Footer />
-  </div>
+            {/* Recent Writing Section */}
+            <section>
+                <div class="flex items-baseline justify-between mb-6">
+                    <span
+                        class="font-sans text-label uppercase tracking-wider text-secondary"
+                        >Writing</span
+                    >
+                    <a
+                        href="/writing"
+                        class="font-sans text-meta text-accent hover:underline"
+                    >
+                        View all
+                    </a>
+                </div>
+
+                <WritingList posts={sortedPosts} showCount={3} />
+            </section>
+        </main>
+
+        <Footer />
+    </div>
 </BaseLayout>
