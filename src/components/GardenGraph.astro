@@ -280,18 +280,24 @@ const edgesData = JSON.stringify(edges);
         }
       }
 
-      // Draw label only for hovered node
-      if (hoveredNode) {
-        const fontSize = transform.scale >= LARGE_LABEL_THRESHOLD ? 12 : 10;
+      // Draw labels - show all when zoomed in, or just hovered node
+      const LABEL_THRESHOLD = 1.2;
+      const showAllLabels = transform.scale >= LABEL_THRESHOLD;
+
+      for (const node of nodes) {
+        // Only show label if this node is hovered or we're zoomed in
+        if (!showAllLabels && node !== hoveredNode) continue;
+
+        const fontSize = transform.scale >= LARGE_LABEL_THRESHOLD ? 11 : 9;
         ctx.font = `${fontSize}px sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
 
-        const labelX = hoveredNode.x;
-        const labelY = hoveredNode.y - nodeRadius - 10 / transform.scale;
+        const labelX = node.x;
+        const labelY = node.y - nodeRadius - 8 / transform.scale;
 
         // Truncate title if too long
-        let title = hoveredNode.title;
+        let title = node.title;
         if (title.length > 25) {
           title = title.slice(0, 22) + '...';
         }
@@ -300,16 +306,18 @@ const edgesData = JSON.stringify(edges);
         const metrics = ctx.measureText(title);
         const textWidth = metrics.width;
         const textHeight = fontSize / transform.scale;
-        const padding = 4 / transform.scale;
+        const padding = 3 / transform.scale;
 
-        // Draw semi-transparent background pill
-        ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(249, 249, 249, 0.95)';
-        ctx.fillRect(
-          labelX - textWidth / 2 - padding,
-          labelY - textHeight - padding,
-          textWidth + padding * 2,
-          textHeight + padding * 2
-        );
+        // Draw semi-transparent background pill (only for hovered node)
+        if (node === hoveredNode) {
+          ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(249, 249, 249, 0.95)';
+          ctx.fillRect(
+            labelX - textWidth / 2 - padding,
+            labelY - textHeight - padding,
+            textWidth + padding * 2,
+            textHeight + padding * 2
+          );
+        }
 
         // Draw text
         ctx.fillStyle = colors.label;
