@@ -1,0 +1,307 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getBacklinks, extractWikiLinks, getRelatedByTags } from '../lib/backlinks';
+
+interface Props {
+  post: CollectionEntry<'writing'>;
+  allPosts: CollectionEntry<'writing'>[];
+}
+
+const { post, allPosts } = Astro.props;
+
+// Get linked posts
+const outgoingSlugs = extractWikiLinks(post.body);
+const outgoingPosts = allPosts.filter(p => outgoingSlugs.includes(p.slug) && !p.data.draft);
+const backlinkPosts = getBacklinks(allPosts, post.slug);
+const relatedByTags = getRelatedByTags(allPosts, post, 3);
+
+// Build node data for the graph
+const nodes = [
+  // Current post (center)
+  {
+    id: post.slug,
+    title: post.data.title,
+    type: 'current',
+    x: 100,
+    y: 100,
+  },
+  // Outgoing links (wiki-links from this post)
+  ...outgoingPosts.map((p, i) => ({
+    id: p.slug,
+    title: p.data.title,
+    type: 'outgoing' as const,
+    angle: (i * 2 * Math.PI) / Math.max(outgoingPosts.length, 1) - Math.PI / 2,
+  })),
+  // Incoming links (backlinks)
+  ...backlinkPosts.map((b, i) => ({
+    id: b.slug,
+    title: b.title,
+    type: 'incoming' as const,
+    angle: Math.PI + (i * 2 * Math.PI) / Math.max(backlinkPosts.length, 1) - Math.PI / 2,
+  })),
+  // Related by tags
+  ...relatedByTags
+    .filter(r => !outgoingSlugs.includes(r.slug) && !backlinkPosts.some(b => b.slug === r.slug))
+    .map((r, i) => ({
+      id: r.slug,
+      title: r.title,
+      type: 'tag' as const,
+      angle: (i * 2 * Math.PI) / Math.max(relatedByTags.length, 1),
+    })),
+];
+
+// Calculate initial positions
+const radius = 70;
+nodes.forEach((node, i) => {
+  if (node.type !== 'current' && 'angle' in node) {
+    (node as any).x = 100 + radius * Math.cos(node.angle);
+    (node as any).y = 100 + radius * Math.sin(node.angle);
+  }
+});
+
+const graphData = JSON.stringify(nodes);
+---
+
+<div class="graph-view" data-graph={graphData}>
+  <canvas
+    width="200"
+    height="200"
+    class="w-full h-auto cursor-pointer rounded-sm border border-card"
+    aria-label="Connection graph showing related posts"
+  ></canvas>
+  <div class="graph-tooltip absolute hidden pointer-events-none z-50 bg-card border border-ink/10 px-2 py-1 text-xs font-sans rounded-sm shadow-sm"></div>
+</div>
+
+<style>
+  .graph-view {
+    position: relative;
+  }
+  .graph-tooltip {
+    max-width: 150px;
+  }
+</style>
+
+<script>
+  interface GraphNode {
+    id: string;
+    title: string;
+    type: 'current' | 'outgoing' | 'incoming' | 'tag';
+    x: number;
+    y: number;
+    vx?: number;
+    vy?: number;
+  }
+
+  function initGraph(container: HTMLElement) {
+    const canvas = container.querySelector('canvas');
+    const tooltip = container.querySelector('.graph-tooltip');
+    if (!canvas || !tooltip) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const dataAttr = container.getAttribute('data-graph');
+    if (!dataAttr) return;
+
+    const nodes: GraphNode[] = JSON.parse(dataAttr).map((n: GraphNode) => ({
+      ...n,
+      vx: 0,
+      vy: 0,
+    }));
+
+    const currentNode = nodes.find(n => n.type === 'current');
+    const otherNodes = nodes.filter(n => n.type !== 'current');
+
+    // Color configuration based on CSS variables
+    const colors = {
+      current: getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#0066CC',
+      outgoing: getComputedStyle(document.documentElement).getPropertyValue('--color-ink').trim() || '#2D2D2D',
+      incoming: getComputedStyle(document.documentElement).getPropertyValue('--color-ink').trim() || '#2D2D2D',
+      tag: getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim() || '#6B6B6B',
+      edge: getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim() || '#6B6B6B',
+    };
+
+    // Handle dark mode
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      colors.outgoing = '#E5E5E5';
+      colors.incoming = '#E5E5E5';
+      colors.edge = '#888888';
+    }
+
+    let animationId: number;
+    let hoveredNode: GraphNode | null = null;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Force simulation
+    function updateForces() {
+      if (prefersReducedMotion) return;
+
+      const centerX = 100;
+      const centerY = 100;
+
+      otherNodes.forEach(node => {
+        // Attraction to center (spring)
+        const dx = centerX - node.x;
+        const dy = centerY - node.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const targetDist = node.type === 'tag' ? 90 : 70;
+        const springStrength = 0.02;
+
+        if (dist > 0) {
+          const force = (dist - targetDist) * springStrength;
+          node.vx! += (dx / dist) * force;
+          node.vy! += (dy / dist) * force;
+        }
+
+        // Repulsion from other nodes
+        otherNodes.forEach(other => {
+          if (node === other) return;
+          const rdx = node.x - other.x;
+          const rdy = node.y - other.y;
+          const rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+          if (rdist > 0 && rdist < 60) {
+            const repelStrength = 30 / (rdist * rdist);
+            node.vx! += (rdx / rdist) * repelStrength;
+            node.vy! += (rdy / rdist) * repelStrength;
+          }
+        });
+
+        // Damping
+        node.vx! *= 0.9;
+        node.vy! *= 0.9;
+
+        // Update position
+        node.x += node.vx!;
+        node.y += node.vy!;
+
+        // Keep within bounds
+        node.x = Math.max(15, Math.min(185, node.x));
+        node.y = Math.max(15, Math.min(185, node.y));
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, 200, 200);
+
+      // Draw edges
+      ctx.strokeStyle = colors.edge;
+      ctx.lineWidth = 1;
+
+      otherNodes.forEach(node => {
+        if (!currentNode) return;
+        ctx.beginPath();
+        ctx.moveTo(currentNode.x, currentNode.y);
+        ctx.lineTo(node.x, node.y);
+        if (node.type === 'tag') {
+          ctx.setLineDash([3, 3]);
+        } else {
+          ctx.setLineDash([]);
+        }
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+
+      // Draw nodes
+      nodes.forEach(node => {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.type === 'current' ? 8 : 5, 0, Math.PI * 2);
+        ctx.fillStyle = colors[node.type];
+        ctx.fill();
+
+        // Border for current node
+        if (node.type === 'current') {
+          ctx.strokeStyle = isDark ? '#fff' : '#000';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      });
+    }
+
+    function animate() {
+      updateForces();
+      draw();
+      animationId = requestAnimationFrame(animate);
+    }
+
+    // Mouse interaction
+    function getMousePos(evt: MouseEvent): { x: number; y: number } {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = 200 / rect.width;
+      const scaleY = 200 / rect.height;
+      return {
+        x: (evt.clientX - rect.left) * scaleX,
+        y: (evt.clientY - rect.top) * scaleY,
+      };
+    }
+
+    function findNodeAt(pos: { x: number; y: number }): GraphNode | null {
+      for (const node of nodes) {
+        const dx = pos.x - node.x;
+        const dy = pos.y - node.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < (node.type === 'current' ? 12 : 8)) {
+          return node;
+        }
+      }
+      return null;
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const pos = getMousePos(e);
+      const node = findNodeAt(pos);
+
+      if (node !== hoveredNode) {
+        hoveredNode = node;
+        canvas.style.cursor = node ? 'pointer' : 'default';
+
+        if (node) {
+          tooltip.textContent = node.title;
+          tooltip.classList.remove('hidden');
+        } else {
+          tooltip.classList.add('hidden');
+        }
+      }
+
+      if (hoveredNode) {
+        const rect = canvas.getBoundingClientRect();
+        tooltip.style.left = `${e.clientX - rect.left + 10}px`;
+        tooltip.style.top = `${e.clientY - rect.top - 25}px`;
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      hoveredNode = null;
+      tooltip.classList.add('hidden');
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const pos = getMousePos(e);
+      const node = findNodeAt(pos);
+      if (node && node.type !== 'current') {
+        window.location.href = `/writing/${node.id}`;
+      }
+    });
+
+    // Start animation
+    if (!prefersReducedMotion) {
+      animate();
+    } else {
+      draw();
+    }
+
+    // Cleanup on page navigation
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationId);
+      } else if (!prefersReducedMotion) {
+        animate();
+      }
+    });
+  }
+
+  // Initialize all graph views on the page
+  document.querySelectorAll('.graph-view').forEach(initGraph);
+</script>
