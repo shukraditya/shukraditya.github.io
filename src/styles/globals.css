@@ -172,6 +172,34 @@ blockquote {
   color: var(--secondary);
 }
 
+/* Wiki Links */
+.wiki-link {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--accent);
+}
+
+.wiki-link:hover {
+  text-decoration: none;
+  border-bottom-style: solid;
+}
+
+.wiki-link-broken {
+  color: #CC0000;
+  text-decoration: none;
+  border-bottom: 1px dotted #CC0000;
+}
+
+[data-theme="dark"] .wiki-link-broken {
+  color: #FF6666;
+  border-bottom-color: #FF6666;
+}
+
+.wiki-link-broken:hover {
+  text-decoration: none;
+  border-bottom-style: solid;
+}
+
 /* Prose content styling */
 .prose p {
   margin-bottom: 1.25rem;

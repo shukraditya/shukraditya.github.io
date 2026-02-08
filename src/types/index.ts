@@ -4,6 +4,7 @@ export interface WritingPost {
   date: Date;
   description: string;
   draft?: boolean;
+  tags?: string[];
 }
 
 export interface WritingFrontmatter {
@@ -11,4 +12,5 @@ export interface WritingFrontmatter {
   date: string;
   description: string;
   draft?: boolean;
+  tags?: string[];
 }
