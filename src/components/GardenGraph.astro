@@ -1,0 +1,344 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { buildLinkGraph } from '../lib/backlinks';
+
+interface Props {
+  posts: CollectionEntry<'writing'>[];
+}
+
+const { posts } = Astro.props;
+
+// Build the complete link graph
+const graph = buildLinkGraph(posts);
+
+// Create nodes for all posts
+const nodes = posts
+  .filter(p => !p.data.draft)
+  .map((post, i) => ({
+    id: post.slug,
+    title: post.data.title,
+    x: 350 + 200 * Math.cos((i * 2 * Math.PI) / Math.max(posts.length, 1)),
+    y: 175 + 100 * Math.sin((i * 2 * Math.PI) / Math.max(posts.length, 1)),
+  }));
+
+// Create edges from wiki-links
+const edges: { source: string; target: string }[] = [];
+for (const [slug, node] of graph) {
+  for (const targetSlug of node.outgoing) {
+    if (graph.has(targetSlug)) {
+      edges.push({ source: slug, target: targetSlug });
+    }
+  }
+}
+
+const nodesData = JSON.stringify(nodes);
+const edgesData = JSON.stringify(edges);
+---
+
+<div class="garden-graph" data-nodes={nodesData} data-edges={edgesData}>
+  <canvas
+    width="700"
+    height="350"
+    class="w-full h-auto cursor-pointer rounded-sm border border-card bg-paper"
+    aria-label="Garden graph showing all posts and their connections"
+  ></canvas>
+  <div class="graph-tooltip absolute hidden pointer-events-none z-50 bg-card border border-ink/10 px-2 py-1 text-xs font-sans rounded-sm shadow-sm"></div>
+</div>
+
+<style>
+  .garden-graph {
+    position: relative;
+  }
+  .graph-tooltip {
+    max-width: 200px;
+  }
+</style>
+
+<script>
+  interface GraphNode {
+    id: string;
+    title: string;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+  }
+
+  interface GraphEdge {
+    source: string;
+    target: string;
+  }
+
+  function initGardenGraph(container: HTMLElement) {
+    const canvas = container.querySelector('canvas');
+    const tooltip = container.querySelector('.graph-tooltip');
+    if (!canvas || !tooltip) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const nodesAttr = container.getAttribute('data-nodes');
+    const edgesAttr = container.getAttribute('data-edges');
+    if (!nodesAttr || !edgesAttr) return;
+
+    const nodes: GraphNode[] = JSON.parse(nodesAttr).map((n: GraphNode) => ({
+      ...n,
+      vx: 0,
+      vy: 0,
+    }));
+    const edges: GraphEdge[] = JSON.parse(edgesAttr);
+
+    // Color configuration
+    const colors = {
+      node: getComputedStyle(document.documentElement).getPropertyValue('--color-ink').trim() || '#2D2D2D',
+      nodeHover: getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#0066CC',
+      edge: getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim() || '#6B6B6B',
+    };
+
+    // Handle dark mode
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      colors.node = '#E5E5E5';
+      colors.edge = '#888888';
+    }
+
+    let animationId: number;
+    let hoveredNode: GraphNode | null = null;
+    let isDragging = false;
+    let dragNode: GraphNode | null = null;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Force simulation parameters
+    const centerX = 350;
+    const centerY = 175;
+    const nodeRadius = 6;
+    const repulsionStrength = 2000;
+    const springLength = 120;
+    const springStrength = 0.003;
+    const centerGravity = 0.0005;
+    const damping = 0.92;
+
+    function updateForces() {
+      if (prefersReducedMotion && !isDragging) return;
+
+      // Repulsion between nodes
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const nodeA = nodes[i];
+          const nodeB = nodes[j];
+          const dx = nodeA.x - nodeB.x;
+          const dy = nodeA.y - nodeB.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 0 && dist < 150) {
+            const force = repulsionStrength / (dist * dist);
+            const fx = (dx / dist) * force;
+            const fy = (dy / dist) * force;
+            nodeA.vx += fx;
+            nodeA.vy += fy;
+            nodeB.vx -= fx;
+            nodeB.vy -= fy;
+          }
+        }
+      }
+
+      // Spring force along edges
+      for (const edge of edges) {
+        const source = nodes.find(n => n.id === edge.source);
+        const target = nodes.find(n => n.id === edge.target);
+        if (!source || !target) continue;
+
+        const dx = target.x - source.x;
+        const dy = target.y - source.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 0) {
+          const force = (dist - springLength) * springStrength;
+          const fx = (dx / dist) * force;
+          const fy = (dy / dist) * force;
+          source.vx += fx;
+          source.vy += fy;
+          target.vx -= fx;
+          target.vy -= fy;
+        }
+      }
+
+      // Center gravity
+      for (const node of nodes) {
+        const dx = centerX - node.x;
+        const dy = centerY - node.y;
+        node.vx += dx * centerGravity;
+        node.vy += dy * centerGravity;
+
+        // Damping
+        if (!isDragging || node !== dragNode) {
+          node.vx *= damping;
+          node.vy *= damping;
+        }
+
+        // Update position
+        if (!isDragging || node !== dragNode) {
+          node.x += node.vx;
+          node.y += node.vy;
+        }
+
+        // Keep within bounds
+        node.x = Math.max(nodeRadius, Math.min(700 - nodeRadius, node.x));
+        node.y = Math.max(nodeRadius, Math.min(350 - nodeRadius, node.y));
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, 700, 350);
+
+      // Draw edges
+      ctx.strokeStyle = colors.edge;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.3;
+
+      for (const edge of edges) {
+        const source = nodes.find(n => n.id === edge.source);
+        const target = nodes.find(n => n.id === edge.target);
+        if (!source || !target) continue;
+
+        ctx.beginPath();
+        ctx.moveTo(source.x, source.y);
+        ctx.lineTo(target.x, target.y);
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1;
+
+      // Draw nodes
+      for (const node of nodes) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
+        ctx.fillStyle = node === hoveredNode ? colors.nodeHover : colors.node;
+        ctx.fill();
+
+        // Highlight ring on hover
+        if (node === hoveredNode) {
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, nodeRadius + 3, 0, Math.PI * 2);
+          ctx.strokeStyle = colors.nodeHover;
+          ctx.lineWidth = 2;
+          ctx.globalAlpha = 0.5;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    function animate() {
+      updateForces();
+      draw();
+      animationId = requestAnimationFrame(animate);
+    }
+
+    // Mouse interaction
+    function getMousePos(evt: MouseEvent): { x: number; y: number } {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = 700 / rect.width;
+      const scaleY = 350 / rect.height;
+      return {
+        x: (evt.clientX - rect.left) * scaleX,
+        y: (evt.clientY - rect.top) * scaleY,
+      };
+    }
+
+    function findNodeAt(pos: { x: number; y: number }): GraphNode | null {
+      for (const node of nodes) {
+        const dx = pos.x - node.x;
+        const dy = pos.y - node.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < nodeRadius + 5) {
+          return node;
+        }
+      }
+      return null;
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const pos = getMousePos(e);
+
+      if (isDragging && dragNode) {
+        dragNode.x = pos.x;
+        dragNode.y = pos.y;
+        dragNode.vx = 0;
+        dragNode.vy = 0;
+        return;
+      }
+
+      const node = findNodeAt(pos);
+
+      if (node !== hoveredNode) {
+        hoveredNode = node;
+        canvas.style.cursor = node ? 'pointer' : 'default';
+
+        if (node) {
+          tooltip.textContent = node.title;
+          tooltip.classList.remove('hidden');
+        } else {
+          tooltip.classList.add('hidden');
+        }
+      }
+
+      if (hoveredNode) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = 700 / rect.width;
+        const scaleY = 350 / rect.height;
+        tooltip.style.left = `${(hoveredNode.x / scaleX) + 10}px`;
+        tooltip.style.top = `${(hoveredNode.y / scaleY) - 30}px`;
+      }
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      const pos = getMousePos(e);
+      const node = findNodeAt(pos);
+      if (node) {
+        isDragging = true;
+        dragNode = node;
+      }
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      isDragging = false;
+      dragNode = null;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      hoveredNode = null;
+      tooltip.classList.add('hidden');
+      isDragging = false;
+      dragNode = null;
+    });
+
+    canvas.addEventListener('click', (e) => {
+      if (isDragging) return;
+      const pos = getMousePos(e);
+      const node = findNodeAt(pos);
+      if (node) {
+        window.location.href = `/writing/${node.id}`;
+      }
+    });
+
+    // Start animation
+    if (!prefersReducedMotion) {
+      animate();
+    } else {
+      draw();
+    }
+
+    // Cleanup on page navigation
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationId);
+      } else if (!prefersReducedMotion) {
+        animate();
+      }
+    });
+  }
+
+  // Initialize all garden graphs on the page
+  document.querySelectorAll('.garden-graph').forEach(initGardenGraph);
+</script>
