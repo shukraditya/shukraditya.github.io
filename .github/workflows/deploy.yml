@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Fix markdown spacing
+        run: npm run fix-lists
+
       - name: Build
         run: npm run build
 

@@ -22,7 +22,7 @@
 |social-icons=outline-style(1.5px-stroke),hover-fill
 
 [CONTENT]|collection=writing,schema=title+date+description+draft
-|format=Markdown/MDX,math=KaTeX-supported(delimiters=$$,\[,\()
+|format=Markdown/MDX,math=KaTeX-supported(delimiters=$$,\[,\(),images=copy-to-public/images,obsidian-wikilinks-need-conversion
 |sorting=date-desc,drafts-filtered-by-default
 
 [LEARNINGS]|astro-content-collections=type-safe-markdown-with-Zod
@@ -37,3 +37,9 @@
 |toc-scroll-to-center=always-scroll-on-click,no-isInView-check,center-heading-in-viewport:targetTop-navHeight-(viewportHeight-navHeight-headingHeight)/2
 |toc-highlight-persistence=track-lastClickedId,set-active-immediately,observer-ignores-others-during-scroll,timeout-reset-after-scroll(prefersReducedMotion?100:1000)
 |toc-observer-pattern=IntersectionObserver(-10%-0px--60%),sort-by-DOM-position,skip-if-lastClickedId-mismatch
+|garden-graph=canvas-340x380,force-simulation,hover-labels,zoom-threshold-1.2,labels-on-zoom+hover
+|image-assets=public/images,reference-as-/images/,url-encode-spaces
+|markdown-lists=prose-class-needs-explicit-list-style-type-disc-decimal
+|wiki-links=remark-plugin-handles-page-links,images-need-standard-markdown-syntax
+|canvas-coordinates=center-point-170-190,repulsion-1000,spring-length-80
+|graph-positioning=fixed-position,calc-75%-center-in-right-space,align-with-content-top
