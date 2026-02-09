@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Fix markdown spacing
-        run: npm run fix-lists
+        run: npx tsx tools/fix-obsidian-lists.ts || true
 
       - name: Build
         run: npm run build
