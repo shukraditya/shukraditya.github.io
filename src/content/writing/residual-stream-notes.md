@@ -466,7 +466,6 @@ where, $K_i^k=LN_{w}fc1_{i}^k$ , $\lambda_{k}$ is sum of all dimension scores of
   - if the dot pdt is weak, neuron fires weakly
 - to find which part of the residual stream switched the neuron on, we just calculate the inner dot product ie $Score=Vector.K_{i}^k$ where vector maybe output of attn head.
 - roughly linear relation
-![FFN contribution screenshot](/images/residual-stream-notes/Screenshot%202026-01-25%20at%204.09.18%20PM.png)
 
 
 Assumptions:
