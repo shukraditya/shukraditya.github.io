@@ -1,95 +1,177 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Nav from '../../components/Nav.astro';
-import Footer from '../../components/Footer.astro';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
 ---
 
 <BaseLayout title="About">
-  <div class="min-h-screen flex flex-col">
-    <Nav current="about" />
+    <div class="min-h-screen flex flex-col">
+        <Nav current="about" />
 
-    <main class="flex-1 pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6">
-    <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8 md:gap-12">
-      {/* Profile Image */}
-      <div class="shrink-0">
-        <div class="w-32 md:w-full aspect-square bg-card overflow-hidden mx-auto md:mx-0">
-          <img
-            src="/profile.jpg"
-            alt="Profile"
-            class="w-full h-full object-cover grayscale-[20%] contrast-105 brightness-105"
-            onerror="this.style.display='none'"
-          />
-          <div class="w-full h-full flex items-center justify-center text-secondary text-sm">
-            Photo
-          </div>
-        </div>
-      </div>
+        <main
+            class="flex-1 pt-24 sm:pt-32 pb-16 max-w-content mx-auto px-4 sm:px-6"
+        >
+            <div
+                class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8 md:gap-12"
+            >
+                {/* Profile Image */}
+                <div class="shrink-0">
+                    <div
+                        class="w-32 md:w-full aspect-square bg-card overflow-hidden mx-auto md:mx-0"
+                    >
+                        <img
+                            src="/profile.jpg"
+                            alt="Profile"
+                            class="w-full h-full object-cover grayscale-[20%] contrast-105 brightness-105"
+                            onerror="this.style.display='none'"
+                        />
+                        <div
+                            class="w-full h-full flex items-center justify-center text-secondary text-sm"
+                        >
+                            Photo
+                        </div>
+                    </div>
+                </div>
 
-      {/* Bio Content */}
-      <div>
-        <h1 class="font-display text-2xl sm:text-display text-ink mb-4 sm:mb-6">About</h1>
+                {/* Bio Content */}
+                <div>
+                    <h1
+                        class="font-display text-2xl sm:text-display text-ink mb-4 sm:mb-6"
+                    >
+                        About
+                    </h1>
 
-        <div class="prose prose-base sm:prose-lg font-charter text-ink leading-relaxed space-y-4 sm:space-y-6">
-          <p>
-            I'm a final-year Computer Science student based in India, with a focus on
-            machine learning, deep learning, and production ML systems. My work spans
-            from training neural networks to building agentic systems that can reason
-            and act autonomously.
-          </p>
+                    <div
+                        class="prose prose-base sm:prose-lg font-charter text-ink leading-relaxed space-y-4 sm:space-y-6"
+                    >
+                        <p>
+                            Final-year CS student. I build production ML
+                            systems—RAG pipelines, multimodal models, and
+                            agentic frameworks.
+                        </p>
 
-          <p>
-            Currently, I'm exploring the intersection of LLMs and software engineering—
-            how large language models can augment development workflows, and how we can
-            build reliable systems around them.
-          </p>
+                        <p>
+                            Recently: Agentic Orchestration at <strong
+                                >TIFIN</strong
+                            >, RAG pipelines at <strong>Memfold AI</strong>,
+                            VLMs for Indic OCR at <strong>Sarvam AI</strong>,
+                            continual learning at <strong>Samsung R&D</strong>.
+                        </p>
 
-          <p>
-            When not coding, I write about what I'm learning. This blog is my attempt
-            to document the journey—failures, insights, and everything between.
-          </p>
-        </div>
+                        <p>
+                            I write to understand. This site is where I break
+                            down what I build/read.
+                        </p>
+                    </div>
 
-        {/* Experience Table */}
-        <div class="mt-10 sm:mt-12">
-          <h2 class="font-sans text-label uppercase tracking-wider text-secondary mb-4 sm:mb-6">
-            Experience
-          </h2>
-          <table class="w-full font-sans text-sm sm:text-meta">
-            <tbody class="divide-y divide-border">
-              <tr>
-                <td class="py-3 text-ink">Machine Learning Intern</td>
-                <td class="py-3 text-secondary text-right tabular-nums">2024</td>
-              </tr>
-              <tr>
-                <td class="py-3 text-ink">Research Assistant</td>
-                <td class="py-3 text-secondary text-right tabular-nums">2023</td>
-              </tr>
-              <tr>
-                <td class="py-3 text-ink">Teaching Assistant</td>
-                <td class="py-3 text-secondary text-right tabular-nums">2023</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                    {/* Experience Table */}
+                    <div class="mt-10 sm:mt-12">
+                        <h2
+                            class="font-sans text-label uppercase tracking-wider text-secondary mb-4 sm:mb-6"
+                        >
+                            Experience
+                        </h2>
+                        <table class="w-full font-sans text-sm sm:text-meta">
+                            <tbody class="divide-y divide-border">
+                                <tr>
+                                    <td class="py-3 text-ink">
+                                        <div class="font-medium">TIFIN</div>
+                                        <div class="text-secondary">
+                                            ML Research Intern
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="py-3 text-secondary text-right tabular-nums align-top"
+                                        >Jan 2026-Present</td
+                                    >
+                                </tr>
+                                <tr>
+                                    <td class="py-3 text-ink">
+                                        <div class="font-medium">
+                                            Memfold AI
+                                        </div>
+                                        <div class="text-secondary">
+                                            AI Engineering Intern
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="py-3 text-secondary text-right tabular-nums align-top"
+                                        >Aug–Dec 2025</td
+                                    >
+                                </tr>
+                                <tr>
+                                    <td class="py-3 text-ink">
+                                        <div class="font-medium">Sarvam AI</div>
+                                        <div class="text-secondary">
+                                            Vision Language Model Intern
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="py-3 text-secondary text-right tabular-nums align-top"
+                                        >May–Aug 2025</td
+                                    >
+                                </tr>
+                                <tr>
+                                    <td class="py-3 text-ink">
+                                        <div class="font-medium">
+                                            Samsung R&D
+                                        </div>
+                                        <div class="text-secondary">
+                                            Virtual Intern
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="py-3 text-secondary text-right tabular-nums align-top"
+                                        >Jan–Jun 2025</td
+                                    >
+                                </tr>
+                                <tr>
+                                    <td class="py-3 text-ink">
+                                        <div class="font-medium">KalkiNi</div>
+                                        <div class="text-secondary">
+                                            Machine Learning Intern
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="py-3 text-secondary text-right tabular-nums align-top"
+                                        >Mar–Dec 2024</td
+                                    >
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-        {/* Education Table */}
-        <div class="mt-6 sm:mt-8">
-          <h2 class="font-sans text-label uppercase tracking-wider text-secondary mb-4 sm:mb-6">
-            Education
-          </h2>
-          <table class="w-full font-sans text-sm sm:text-meta">
-            <tbody class="divide-y divide-border">
-              <tr>
-                <td class="py-3 text-ink">Integrated M.Tech in Computer Science and Engineering with Specialisation in Data Science</td>
-                <td class="py-3 text-secondary text-right tabular-nums">2022–2027</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+                    {/* Education Table */}
+                    <div class="mt-6 sm:mt-8">
+                        <h2
+                            class="font-sans text-label uppercase tracking-wider text-secondary mb-4 sm:mb-6"
+                        >
+                            Education
+                        </h2>
+                        <table class="w-full font-sans text-sm sm:text-meta">
+                            <tbody class="divide-y divide-border">
+                                <tr>
+                                    <td class="py-3 text-ink">
+                                        <div class="font-medium">
+                                            Vellore Institute of Technology
+                                        </div>
+                                        <div class="text-secondary">
+                                            Integrated M.Tech, Computer Science
+                                            (Data Science)
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="py-3 text-secondary text-right tabular-nums align-top"
+                                        >2022–2027</td
+                                    >
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <Footer />
     </div>
-  </main>
-
-    <Footer />
-  </div>
 </BaseLayout>
