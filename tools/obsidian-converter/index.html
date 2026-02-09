@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obsidian to Astro Converter</title>
+  <style>
+    :root {
+      --paper: #F9F9F9;
+      --card: #F5F5F5;
+      --ink: #2D2D2D;
+      --accent: #0066CC;
+      --border: #E0E0E0;
+      --success: #2D7D46;
+      --error: #B71C1C;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    header p {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      height: calc(100vh - 80px);
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+        height: auto;
+        min-height: calc(100vh - 80px);
+      }
+    }
+
+    .panel {
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .input-panel {
+      border-right: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .input-panel {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.9375rem;
+      font-family: inherit;
+      background: white;
+      color: var(--ink);
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    textarea {
+      min-height: 350px;
+      resize: vertical;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.625rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0ms;
+      background: white;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    button.primary:hover {
+      background: #0055AA;
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--ink);
+    }
+
+    button.secondary:hover {
+      background: var(--card);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .output-panel {
+      background: white;
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .output-meta {
+      font-size: 0.875rem;
+      color: #666;
+    }
+
+    .output-content {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+
+    .status.success {
+      background: #E8F5E9;
+      color: var(--success);
+      border: 1px solid #A5D6A7;
+    }
+
+    .status.error {
+      background: #FFEBEE;
+      color: var(--error);
+      border: 1px solid #EF9A9A;
+    }
+
+    .status.info {
+      background: #E3F2FD;
+      color: var(--accent);
+      border: 1px solid #90CAF9;
+    }
+
+    .status.warning {
+      background: #FFF3E0;
+      color: #E65100;
+      border: 1px solid #FFCC80;
+    }
+
+    .image-status {
+      margin-top: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .image-status .success {
+      color: var(--success);
+    }
+
+    .image-status .error {
+      color: var(--error);
+    }
+
+    .image-list {
+      margin-top: 0.5rem;
+      padding-left: 1.25rem;
+    }
+
+    .image-list li {
+      margin-bottom: 0.25rem;
+    }
+
+    .image-list .found {
+      color: var(--success);
+    }
+
+    .image-list .missing {
+      color: var(--error);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #999;
+      padding: 3rem 1rem;
+    }
+
+    .slug-input {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .slug-input span {
+      color: #666;
+      font-size: 0.875rem;
+      font-family: monospace;
+    }
+
+    .slug-input input {
+      flex: 1;
+    }
+
+    .folder-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .folder-info {
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: #666;
+    }
+
+    .folder-info .file-count {
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .folder-info .error {
+      color: var(--error);
+    }
+
+    .folder-info .warning {
+      color: #E65100;
+    }
+
+    #folderPicker {
+      display: none;
+    }
+
+    .step-indicator {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.8125rem;
+    }
+
+    .step {
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      background: var(--border);
+      color: #666;
+    }
+
+    .step.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .step.done {
+      background: var(--success);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Obsidian to Astro Converter</h1>
+    <p>Convert Obsidian markdown to Astro blog format with image migration</p>
+  </header>
+
+  <main>
+    <div class="panel input-panel">
+      <div class="step-indicator">
+        <span class="step" id="step1">1. Select Folder</span>
+        <span class="step" id="step2">2. Convert</span>
+        <span class="step" id="step3">3. Migrate Images</span>
+      </div>
+
+      <div class="folder-section">
+        <div class="form-group">
+          <label for="folderPickerInput">Obsidian Attachments Folder</label>
+          <button id="browseBtn" class="secondary" type="button">Browse for Folder...</button>
+          <input type="file" id="folderPicker" webkitdirectory directory multiple>
+          <div id="folderInfo" class="folder-info">
+            No folder selected. Click "Browse" to select your Obsidian attachments folder.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="slug">Output Slug (optional)</label>
+        <div class="slug-input">
+          <span>src/content/writing/</span>
+          <input type="text" id="slug" placeholder="auto-generated-from-title">
+          <span>.md</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="markdown">Obsidian Markdown</label>
+        <textarea id="markdown" placeholder="Paste your Obsidian markdown here...
+
+Example:
+---
+title: My Post
+date: 2024-01-15
+---
+
+# My Post Title
+
+This is the first paragraph that will become the description.
+
+![[image.png]]
+
+Some more content..."></textarea>
+      </div>
+
+      <div class="button-group">
+        <button id="convertBtn" class="primary">Convert</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+      </div>
+
+      <div id="status"></div>
+    </div>
+
+    <div class="panel output-panel">
+      <div id="outputContainer">
+        <div class="empty-state">
+          <p>Click "Convert" to see the output</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const markdownInput = document.getElementById('markdown');
+    const slugInput = document.getElementById('slug');
+    const convertBtn = document.getElementById('convertBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusDiv = document.getElementById('status');
+    const outputContainer = document.getElementById('outputContainer');
+    const browseBtn = document.getElementById('browseBtn');
+    const folderPicker = document.getElementById('folderPicker');
+    const folderInfo = document.getElementById('folderInfo');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+
+    let lastResult = null;
+    let fileMap = new Map(); // filename -> File object or FileSystemFileHandle
+    let useModernAPI = false;
+    let imageFilenamesFound = [];
+
+    updateSteps();
+
+    convertBtn.addEventListener('click', async () => {
+      const markdown = markdownInput.value.trim();
+      const slug = slugInput.value.trim();
+
+      if (!markdown) {
+        showStatus('Please enter markdown content', 'error');
+        return;
+      }
+
+      convertBtn.disabled = true;
+      convertBtn.textContent = 'Converting...';
+      showStatus('Converting...', 'info');
+
+      try {
+        const response = await fetch('/convert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ markdown, slug })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          showStatus(result.error || 'Conversion failed', 'error');
+          return;
+        }
+
+        lastResult = result;
+        imageFilenamesFound = result.images.found;
+
+        displayOutput(result);
+        updateSteps();
+
+        const foundCount = imageFilenamesFound.length;
+        const matchedCount = countMatchedImages();
+
+        let statusMsg = `Converted successfully! Found ${foundCount} image references.`;
+        if (foundCount > 0) {
+          statusMsg += ` ${matchedCount} of ${foundCount} images matched in selected folder.`;
+          if (matchedCount < foundCount) {
+            statusMsg += ' Some images not found - check folder selection.';
+          }
+        }
+        showStatus(statusMsg, matchedCount < foundCount && foundCount > 0 ? 'warning' : 'success');
+
+        if (!slug) {
+          slugInput.value = result.suggestedSlug;
+        }
+      } catch (err) {
+        showStatus(`Error: ${err.message}`, 'error');
+      } finally {
+        convertBtn.disabled = false;
+        convertBtn.textContent = 'Convert';
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      markdownInput.value = '';
+      slugInput.value = '';
+      fileMap.clear();
+      imageFilenamesFound = [];
+      folderInfo.innerHTML = 'No folder selected. Click "Browse" to select your Obsidian attachments folder.';
+      outputContainer.innerHTML = '<div class="empty-state"><p>Click "Convert" to see the output</p></div>';
+      statusDiv.innerHTML = '';
+      lastResult = null;
+      useModernAPI = false;
+      updateSteps();
+    });
+
+    function countMatchedImages() {
+      return imageFilenamesFound.filter(name => fileMap.has(name)).length;
+    }
+
+    function updateSteps() {
+      const hasFolder = fileMap.size > 0;
+      const hasConverted = lastResult !== null;
+
+      step1.className = 'step' + (hasFolder ? ' done' : ' active');
+      step2.className = 'step' + (hasConverted ? ' done' : hasFolder ? ' active' : '');
+      step3.className = 'step' + (hasConverted && imageFilenamesFound.length > 0 ? ' active' : '');
+    }
+
+    function showStatus(message, type) {
+      statusDiv.innerHTML = `<div class="status ${type}">${escapeHtml(message)}</div>`;
+    }
+
+    function displayOutput(result) {
+      const foundCount = result.images.found.length;
+      const matchedCount = countMatchedImages();
+
+      let imageStatusHtml = '';
+      if (foundCount > 0) {
+        const matchStatus = matchedCount === foundCount
+          ? '<span class="success">All images found in folder</span>'
+          : `<span class="error">${foundCount - matchedCount} images not found in folder</span>`;
+
+        imageStatusHtml = `
+          <div class="image-status">
+            <strong>Images:</strong> ${matchStatus}
+            <ul class="image-list">
+              ${result.images.found.map(name => {
+                const isFound = fileMap.has(name);
+                return `<li class="${isFound ? 'found' : 'missing'}">${escapeHtml(name)} ${isFound ? '✓' : '✗'}</li>`;
+              }).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      const showMigrateBtn = foundCount > 0 && matchedCount > 0;
+
+      outputContainer.innerHTML = `
+        <div class="output-header">
+          <div class="output-meta">
+            <strong>Output:</strong> ${escapeHtml(result.writePath)}
+          </div>
+          <div class="button-group">
+            <button id="copyBtn" class="secondary">Copy</button>
+            ${showMigrateBtn ? `<button id="migrateBtn" class="primary">Migrate Images (${matchedCount})</button>` : ''}
+            <button id="writeBtn" class="primary">Write to Blog</button>
+          </div>
+        </div>
+        <pre class="output-content">${escapeHtml(result.output.fullContent)}</pre>
+        ${imageStatusHtml}
+      `;
+
+      document.getElementById('copyBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(result.output.fullContent);
+        document.getElementById('copyBtn').textContent = 'Copied!';
+        setTimeout(() => {
+          document.getElementById('copyBtn').textContent = 'Copy';
+        }, 1500);
+      });
+
+      if (showMigrateBtn) {
+        document.getElementById('migrateBtn').addEventListener('click', migrateImages);
+      }
+
+      document.getElementById('writeBtn').addEventListener('click', writeToBlog);
+    }
+
+    async function migrateImages() {
+      const btn = document.getElementById('migrateBtn');
+      btn.disabled = true;
+      btn.textContent = 'Migrating...';
+
+      try {
+        const matchedFiles = imageFilenamesFound.filter(name => fileMap.has(name));
+        const formData = new FormData();
+
+        for (const filename of matchedFiles) {
+          const fileOrHandle = fileMap.get(filename);
+
+          if (useModernAPI && fileOrHandle.getFile) {
+            // FileSystemFileHandle
+            const file = await fileOrHandle.getFile();
+            formData.append('images', file, filename);
+          } else {
+            // Regular File object
+            formData.append('images', fileOrHandle, filename);
+          }
+        }
+
+        const response = await fetch('/upload-images', {
+          method: 'POST',
+          body: formData
+        });
+
+        const uploadResult = await response.json();
+
+        if (uploadResult.success) {
+          btn.textContent = 'Migrated!';
+          btn.disabled = true;
+          showStatus(`Successfully migrated ${uploadResult.migrated} images to public/images/`, 'success');
+          step3.className = 'step done';
+
+          if (uploadResult.errors.length > 0) {
+            console.error('Migration errors:', uploadResult.errors);
+          }
+        } else {
+          showStatus(uploadResult.error || 'Migration failed', 'error');
+          btn.disabled = false;
+          btn.textContent = `Migrate Images (${matchedFiles.length})`;
+        }
+      } catch (err) {
+        showStatus(`Error: ${err.message}`, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Migrate Images';
+      }
+    }
+
+    async function writeToBlog() {
+      const btn = document.getElementById('writeBtn');
+      btn.disabled = true;
+      btn.textContent = 'Writing...';
+
+      try {
+        const response = await fetch('/write', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: lastResult.output.fullContent,
+            slug: lastResult.suggestedSlug
+          })
+        });
+
+        const writeResult = await response.json();
+
+        if (writeResult.success) {
+          btn.textContent = 'Saved!';
+          showStatus(`Written to ${writeResult.path}`, 'success');
+        } else {
+          showStatus(writeResult.error || 'Write failed', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Write to Blog';
+        }
+      } catch (err) {
+        showStatus(`Error: ${err.message}`, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Write to Blog';
+      }
+    }
+
+    // Folder picker handling
+    browseBtn.addEventListener('click', () => {
+      if ('showDirectoryPicker' in window) {
+        pickDirectoryWithAPI();
+      } else {
+        folderPicker.click();
+      }
+    });
+
+    async function pickDirectoryWithAPI() {
+      try {
+        const dirHandle = await window.showDirectoryPicker();
+        useModernAPI = true;
+        fileMap.clear();
+
+        let fileCount = 0;
+        for await (const entry of dirHandle.values()) {
+          if (entry.kind === 'file') {
+            fileMap.set(entry.name, entry);
+            fileCount++;
+          }
+        }
+
+        updateFolderInfo(fileCount, dirHandle.name);
+        updateSteps();
+
+        // Re-display output if we already converted to update image match status
+        if (lastResult) {
+          displayOutput(lastResult);
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          folderInfo.innerHTML = `<span class="error">Error: ${escapeHtml(err.message)}</span>`;
+        }
+      }
+    }
+
+    folderPicker.addEventListener('change', (e) => {
+      useModernAPI = false;
+      fileMap.clear();
+
+      const files = Array.from(e.target.files);
+      for (const file of files) {
+        fileMap.set(file.name, file);
+      }
+
+      const firstFile = files[0];
+      let folderName = '';
+      if (firstFile?.webkitRelativePath) {
+        const parts = firstFile.webkitRelativePath.split('/');
+        folderName = parts[0];
+      }
+
+      updateFolderInfo(fileMap.size, folderName);
+      updateSteps();
+
+      if (lastResult) {
+        displayOutput(lastResult);
+      }
+    });
+
+    function updateFolderInfo(fileCount, folderName) {
+      if (fileCount === 0) {
+        folderInfo.innerHTML = '<span class="warning">No files found in selected folder.</span>';
+        return;
+      }
+
+      const matchedCount = countMatchedImages();
+      let html = `<span class="file-count">${fileCount} files</span> found in "${escapeHtml(folderName || 'selected folder')}".`;
+
+      if (imageFilenamesFound.length > 0) {
+        html += `<br>${matchedCount} of ${imageFilenamesFound.length} referenced images matched.`;
+      }
+
+      folderInfo.innerHTML = html;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
