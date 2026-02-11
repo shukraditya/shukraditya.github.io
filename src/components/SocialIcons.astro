@@ -1,4 +1,10 @@
 ---
+interface Props {
+  size?: string;
+}
+
+const { size = "w-5 h-5" } = Astro.props;
+
 interface SocialLink {
   name: string;
   href: string;
@@ -39,7 +45,7 @@ const socials: SocialLink[] = [
       aria-label={social.name}
     >
       <svg
-        class="w-5 h-5"
+        class={size}
         fill={social.name === 'X' ? 'currentColor' : 'none'}
         stroke="currentColor"
         viewBox="0 0 24 24"

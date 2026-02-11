@@ -43,3 +43,4 @@
 |wiki-links=remark-plugin-handles-page-links,images-need-standard-markdown-syntax
 |canvas-coordinates=center-point-170-190,repulsion-1000,spring-length-80
 |graph-positioning=fixed-position,calc-75%-center-in-right-space,align-with-content-top
+|footer-social-icons=SocialIcons-component-with-size-prop,default-w-5-h-5,footer-uses-w-4-h-4,copyright-left-icons-right
