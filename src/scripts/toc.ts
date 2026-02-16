@@ -1,7 +1,7 @@
 // Table of Contents active section highlighting
 function initTOC() {
   const tocLinks = document.querySelectorAll('.toc-link');
-  const headings = document.querySelectorAll('h2[id], h3[id]');
+  const headings = document.querySelectorAll('h1[id], h2[id], h3[id]');
 
   if (!tocLinks.length || !headings.length) return;
 

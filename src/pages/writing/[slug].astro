@@ -21,7 +21,7 @@ const allPosts = await getCollection('writing');
 
 const { Content, headings } = await post.render();
 
-const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 const backlinks = getBacklinks(allPosts, post.slug);
 const tags = post.data.tags || [];
 
@@ -127,7 +127,7 @@ const readTime = calculateReadTime(post.body);
                   <h3 class="font-sans text-label uppercase tracking-wider text-secondary mb-3">On This Page</h3>
                   <ul class="space-y-1">
                     {tocHeadings.map((heading) => (
-                      <li class={heading.depth === 3 ? 'pl-4' : ''}>
+                      <li class={heading.depth === 2 ? 'pl-4' : heading.depth === 3 ? 'pl-8' : ''}>
                         <a
                           href={`#${heading.slug}`}
                           class="mobile-toc-link block py-1 font-sans text-sm text-secondary hover:text-accent transition-none"

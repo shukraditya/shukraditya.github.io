@@ -17,7 +17,7 @@ const { headings } = Astro.props;
   <ul class="space-y-1">
     {
       headings.map((heading) => (
-        <li class={heading.depth === 3 ? 'pl-4' : ''}>
+        <li class={heading.depth === 2 ? 'pl-4' : heading.depth === 3 ? 'pl-8' : ''}>
           <a
             href={`#${heading.slug}`}
             class="toc-link block py-1 pr-2 font-sans text-sm text-secondary hover:text-accent transition-none"

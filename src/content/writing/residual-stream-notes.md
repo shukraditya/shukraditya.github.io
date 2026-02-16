@@ -319,26 +319,38 @@ Tying this back to the FFN residual values,
 - if FFN adds a vector $v=FFN_{i}^k$ to the stream input $x$,
 	- New Stream=$x+v$
 	- for token $t$ 
+
 $$\text{New Score}= (x + v)\cdot e_t= x \cdot e_t + v \cdot e_t = \text{Old Score} + \text{Change}$$
 
 for the equation $FFN_{i}^k={m_{i}^{k}}\cdot{FC2_{i}^k}$ , 
+
 if $m_{i}^k>0$, then it enhances the probabilities of top bs value tokens in $FC2_i^k$  vector.
+
 this is because:
+
 - recall how $FC2_i^k$ basically contains features that can be added to the stream. 
 - this naturally aligns with some words and doesn't with others. for eg it might point towards "cold" "winter" "snow"
 - the coefficient $m_i^k$ tells us how "strongly" to push in that direction.
+
 So, the top BS value tokens will be the ones that $FC2_i^k$ likes or gravitates towards. 
+
 this is because there's a high positive dot product with $FC2_i^k$ 
+
 eg something like $FC2 \cdot e_{\text{King}} = +5.0$.
+
 now, since $m_i^k>0$, we add a positive amount, specifically $m_i^k \times 5$, resulting in the probability of "King" going up.
+
 Analogy: **This neuron detects a pattern and immediately votes to increase the likelihood of the specific words associated with that pattern.**
+
 Therefore, distribution change is caused by a direct addition function on BS values. 
 
 the **change on probabilities caused by $v$ is non linear.** so can't predict using probabilities
+
 - probabilities calculated using softmax, which is non linear.
 - for eg, adding vector that tends to a certain word like "King" doesn't guarantee that probability of only King goes up. another word like "Queen" might go up so fast, that King shrinks(since softmax, so has to add  up to 1).
 
 however, BS values or logits can be used to predict.
+
 - **linear relation**. New Score=Old Score+Neuron's addition
 - since softmax preserves rank ie if a BS value significantly increases with respect to others, we can guarantee that its probability will eventually increase.
 - therefore, by analyzing the highest BS value tokens in the added vector $v$, we can say which tokens the **neuron is trying to promote**.
@@ -346,48 +358,70 @@ however, BS values or logits can be used to predict.
 ### Answering the questions now
 
 part 7: if some parms contain knowledge, what is main mech to merge the knowledge into the final embedding for prediction?
+
 this can be easily answered by the fact that if:
+
 - subvalue contains knowledge
 - then corresponding tokens will have high BS vals
 - thus increasing probs when adding subvalue on other vectors
 
 thus, this begs the 3rd question: how to quantify the contribution of a layer/module for predicting next word? i.e. contribution score of vector $v$ when adding on vector $x$ to predict token $t$.
+
 #### calculating score
 with the same example, of "<start\> The capital of India is",
+
 the probability of increase of input token "is" on the $6^{th}$ layer is given by:$$p(\text{"Delhi"|}L_{res_{6}}^5)-p(\text{"Delhi"|}L_{in_{6}}^5)$$
+
 can alternatively be read as: 
+
 $$p(\text{"Delhi"|}\text{After Layer 6 for token 5})-p(\text{"Delhi"|}\text{Before Layer 6 for token 5})$$
+
 it checks the direct contribution of a part of the model (here, layer 6) to the correct prediction ("Delhi" the capital of India), essentially answering the question: *did layer 6 **figure out** the answer or did it **already know** the answer?*
+
 ##### before
 $L_{in_6}^5$ -> input to layer 6 at posn 5
+
 - the state of the model BEFORE layer 6 has contributed anything ie what the model knows up to end of layer 5.
 - it represents a hypothetical state in the latent space where the layer says: 
+
   " i know that we're talking about a country and it's capital, but not sure which state. i have a *gut* feeling it's Delhi with 10% confidence"
+
 ##### after
 $L_{in_{6}}^5$ -> output from layer 6 at posn 5
+
 - state of the model AFTER layer 6 has contributed. contains residual information added by layer 6's attention heads.
 - represents a hypothetical state in the latent space saying:
+
   "i just looked back at the word 'India' and 'capital'. I'm not pretty sure the next word is 'Delhi' with about 80% confidence."
 
 #### logit lens
 This operation, $p(\text{"Delhi"}|x)$ is the "**logit lens**". let's us take a peek into what the logit says. 
+
 - takes an intermediate vector $x_{intermediate}$ like $L_{in}$ or $L_{res}$.
 - considers that THIS is the final o/p of the model
 - projects it to the vocab using the unembedding matrix to see what word the model would be GUESSING RIGHT NOW.
+
 This technique let's us **blame or credit** a particular layer for the predictions. 
+
 - if $p(\text{"Delhi"|}L_{res_{6}}^5)-p(\text{"Delhi"|}L_{in_{6}}^5)\gg 0$ then we can say that the specific layer contributed to getting the information "Delhi" and wrote the answer "Delhi" to the residual stream.
 - if it's $p(\text{"Delhi"|}L_{res_{6}}^5)-p(\text{"Delhi"|}L_{in_{6}}^5) \approx 0$ , then layer 6 didn't do much. 
+
   **it can either mean that model knew it already from prev layer OR doesn't know it yet.**
+
 #### how to quantify the contributions?
 but this method of quantifying the contribution has a bit of a disadvantage as well(for lower layers). Observation: two step prediction process during prob change:
+
 - "silent" sort: the correct token prob stays low but rank shoots up. the model knows it's a candidate but doesn't commit to that token as the correct one yet.
 - "loud" jump: a single layer adds vector $v$ that pushes that token's score high enough to dominate the denominator, allowing it to spike in confidence.
 - this also explains how a particular layer **seemingly suddenly** boosts the confidence rather than gradually increment.
 
 ##### funky function
 to understand why this happens, consider adding $v$ to $x$ in which $BS(v)=[0,0,\dots,bs_{t}^v,\dots,0]$ and $p(t|v)=1$. then the probability of $x+v$ is: $$p(t|x+v)=\frac{{\exp(bs_{t}^x+bs_{t}^v)}}{\exp(bs_{t}^x+bs_{t}^v)+\sum_{i=1}^{\text{vocabulary}-{token}}bs_{i}^x}$$
+
 $v$ helpful for increasing probability of token $t$ when $bs_{t}^v$ is greater than other bs values. 
+
 $$F(l) = \frac{A e^{l}}{A e^{l} + B}$$ where, 
+
 $$
 A = \exp(bs_{t}^x), \quad
 
@@ -397,10 +431,15 @@ l = bs_{t}^v
 
 $$
 $x$=state of residual stream before the "jump"
+
 $v$=the update vector added by the layer
+
 $t$=the correct token
+
 $bs_{t}^x$=logit of the correct token *before* update
+
 $bs_{t}^v$=boosted logit aded by vector v
+
 - Thus, here 
   - A becomes the "strength" of the correct token before the boost
   - B becomes the "sum of strengths" of all other tokens in the vocabulary. 
@@ -411,54 +450,77 @@ $bs_{t}^v$=boosted logit aded by vector v
 	- for large $l$,$e^l \gg B$. Prob $\approx$ 1
 
 generally, A$\ll$B on lower layers as **predicted token's BS val is usually very very small on the first layer**(how we can't predict with much confidence that the next token is "Delhi" given the token "is").
+
 ![probability curve](/images/residual-stream-notes/Pasted%20image%2020260124232612.png)
 
 since it increases only after a point, not fair to use the prob increase as the contribution score.  for upper layer, it's more than the lower layer.
 
 ##### log of funky function
 however, the curve of $\log(F(l))$ is linear. it's equal to the loss function during training as well. double benefit. 
+
 ![log probability curve](/images/residual-stream-notes/Pasted%20image%2020260124234633.png)
+
 the log probability increase gives us the contribution score $C(i)$ for the $i^{th}$ layer for predicting word $w$. $$C(i)=\log(p(w|L_{i}))-\log(p(w|L_{i-1}))$$ where, $L_{i}$ is the new vector after adding the layer's vector.
+
 so, for the sake of completion, 
+
 $C(ATTN_{6})=\log(p(L_{res_{6}}))-\log(p(L_{in_{6}}))$ and $C(FFN_{6})=\log(p(L_{out_{6}}))-\log(p(L_{res_{6}}))$ 
 
 #### is there any relation among contribution scores?
 by this, we mean, to predict token $t$ when vector $v$ is added to $x$, given we have $C(v_{1})$ and $C(v_{2})$ then what is $C({v_{1}}+{v_{2}})$?
+
 - we rank all suvalues of one FFN layer by their contrib scores
 - calculate sum in ascending order ie $[v_{1},v_{1}+v_{2},v_{1}+v_{2}+v_{3},\dots]$
 - then we calculate $C(v_{1})+C(v_{2})+C(v_{3})$ and $C(v_{1}+v_{2}+v_{3})$
 - there's a roughly linear relationship between contribution scores
+
   ![contribution scores linear relation](/images/residual-stream-notes/Pasted%20image%2020260125015316.png)$\text{x axis}: C(v_{1})+C(v_{2})+\dots \text{y axis : }C(v_{1}+v_{2}+v_{3}+\dots)$
 
 #### cross layer contribution on FFN subvalues
 - when subvalue $v$ is added on $x$, $v$ is more helpful to increase token $t$'s probability if $bs_{t}^v$ is larger. 
 - for transformers, a layer level or subvalue level vector works both as a **query** to activate other subvalues and as a **value**.
+
 this brings us to the next question to answer: in addition to parms directly storing knowledge, any way they can influence other parms?
 
 ##### FFN subvalue activation
 - FFN subvalue activated by layer's residual output  and residual output is a sum of a list of layer-level vectors on prev layers.
+
   $m_{i}^k=ReLU(LN(L_{res_{i}}).FN1_{i}^k+b_{i}^k)$ 
+
 - each layer level vectors split into suvalue level vectors.
 - so, each lower layer's attention/FFN subvalue is a "query" to activate the coeffcient scores of upper layer's FFN subvalues.
 - for activated FFN subvalues, eqn becomes:
+
 $m_{i}^k=LN(L_{res_{i}}).FN1_{i}^k+b_{i}^k$        with    $L_{res_{i}}=L_{in_{0}}+ATTN_{0}+FFN_{0}+\dots+ATTN_{i}$
+
 - each previous layer's vector is contributing to compute the subvalue's coefficient score.
 - a vector's contrib can be shared into diff subvectors, letting us compute which vector ACTUALLY contributes. so, we're trying to figure out who actually gets the credit.
 
 we know, $L_{res}=L_{in}+ATTN$. what we want to be able to answer is:
+
 if the final score for the next token "Delhi" is 4, how much of it came from the input and how much from attention?
+
 here, $L_{res}$ is the contribution score ie the final value we want to explain and then there's a coefficient score that helps us measure the "strength" of the signal/vector before normalisation.
+
 for eg, $L_{in}$ has coefficient score of 2 and $ATTN$ has coefficient score of 1.
+
 total coefficient score=3
+
 $L_{in}$ gets 2/3 of final score and ATTN gets 1/3.
+
 however, we can't directly say that because we are using LayerNorm for the $L_{res_i}$, making it non linear.
+
 so, for standard LayerNorm,
 
 
 ![layer norm linear relation](/images/residual-stream-notes/Pasted%20image%2020260125024827.png)
+
 group all multiplicative terms and all constant terms and you get:
+
 $$m_{i}^k=\frac{{L_{res_{i}}.K_{i}^k}}{V}-\frac{{E\lambda_{k}}}{V}+B_{i}^k$$
+
 where, $K_i^k=LN_{w}fc1_{i}^k$ , $\lambda_{k}$ is sum of all dimension scores of $K_{i}^k$ and $B_{i}^k=LN_{b}.fc1_{i}^k+b_{i}^k$
+
 - for each FFN subvalue, $K_{i}^k$ and $B_{i}^k$ are fixed. 
 - the only thing changing are $L_{res_{i}}$ and subsequently, $E$ and $V$ .
 - In the equation, the bias term is dominated by the numerator of $\frac{{L_{res_{i}}.K_{i}^k}}{V}$. 
@@ -469,6 +531,7 @@ where, $K_i^k=LN_{w}fc1_{i}^k$ , $\lambda_{k}$ is sum of all dimension scores of
 
 
 Assumptions:
+
 after reading the paper, i got to know there are a few terms/assumptions that are paper specific and do not translate 1:1 to the field of mech interp. clearing that out.
 
 | Term                        | Standard concept                    | Nuance                                                                                                                                                                                                |

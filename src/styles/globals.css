@@ -205,6 +205,12 @@ blockquote {
   margin-bottom: 1.25rem;
 }
 
+.prose h1 {
+  font-size: 1.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
 .prose h2 {
   font-size: 1.5rem;
   margin-top: 2.5rem;

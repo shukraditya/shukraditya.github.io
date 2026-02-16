@@ -14,12 +14,19 @@ export interface Backlink {
  */
 export function extractWikiLinks(body: string): string[] {
   const links: string[] = [];
-  // Match [[slug|display]] or [[slug]]
+  // Match [[slug|display]] or [[slug]] or [[slug#anchor]] or [[#anchor]]
   const regex = /\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g;
   let match;
 
   while ((match = regex.exec(body)) !== null) {
-    links.push(match[1].trim());
+    const rawSlug = match[1].trim();
+    // Strip anchor for backlink matching (e.g., "slug#section" → "slug")
+    const hashIndex = rawSlug.indexOf('#');
+    const slug = hashIndex >= 0 ? rawSlug.slice(0, hashIndex) : rawSlug;
+    // Only add if there's a slug (anchor-only links don't create backlinks)
+    if (slug) {
+      links.push(slug);
+    }
   }
 
   return links;
