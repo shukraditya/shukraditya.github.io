@@ -77,7 +77,7 @@ $$\text{(Sanctification)}\quad\hat{X} = \mathrm{LN}(L_{\text{in}})$$
 $$
 \text{(Attention)}\quad
 \mathrm{Attention}(X)
-= \sigma\!\left(\frac{QK^{T}}{\sqrt{d_k}} + M_{\text{causal}}\right)V
+= \sigma\left(\frac{QK^{T}}{\sqrt{d_k}} + M_{\text{causal}}\right)V
 $$
 
 $$
@@ -88,7 +88,7 @@ $$
 $$
 \text{(FFN)}\quad
 \mathrm{FFN}(L_{\text{res}})
-= \mathrm{ReLU}\!\big(\mathrm{LN}(L_{\text{res}})W_1 + b_1\big)W_2 + b_2
+= \mathrm{ReLU}\big(\mathrm{LN}(L_{\text{res}})W_1 + b_1\big)W_2 + b_2
 $$
 
 $$
