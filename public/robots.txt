@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://shukraditya.in/sitemap-index.xml
