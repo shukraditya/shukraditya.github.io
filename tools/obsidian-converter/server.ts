@@ -7,7 +7,7 @@ import YAML from 'yaml';
 const app = new Hono();
 
 // Paths
-const PROJECT_ROOT = path.resolve('/Users/user/dev/personal/shukraditya.github.io');
+const PROJECT_ROOT = path.resolve('/Users/shukrasaur/dev/shukraditya.github.io');
 const PUBLIC_IMAGES = path.join(PROJECT_ROOT, 'public', 'images');
 const WRITING_DIR = path.join(PROJECT_ROOT, 'src', 'content', 'writing');
 
