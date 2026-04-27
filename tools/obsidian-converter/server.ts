@@ -155,6 +155,12 @@ function transformBody(body: string): string {
     return `![${alt || filename.replace(/\.[^.]+$/, '')}](/images/${filename})`;
   });
 
+  // Insert blank line after callout headers so CommonMark parses them as separate paragraphs
+  transformed = transformed.replace(
+    /^(>(?:\s*>)?\s*)(\[!\w+\](?:-[^\n]*)?\n)(>(?:\s*>)?\s*)(?!\s*$)/gm,
+    '$1$2$1\n$3'
+  );
+
   return transformed;
 }
 

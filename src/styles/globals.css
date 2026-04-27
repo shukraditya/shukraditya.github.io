@@ -172,6 +172,60 @@ blockquote {
   color: var(--secondary);
 }
 
+/* Callouts */
+.callout {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--text);
+}
+
+.callout summary {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-family: "SF Pro", -apple-system, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.callout summary::-webkit-details-marker {
+  display: none;
+}
+
+.callout summary::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: 0.5em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: none;
+}
+
+.callout[open] > summary::after {
+  transform: rotate(90deg);
+}
+
+.callout > *:not(summary) {
+  padding: 0 0 0.75rem 0;
+  margin: 0;
+}
+
+.callout > summary + * {
+  padding-top: 0.25rem;
+}
+
+.callout .callout {
+  margin: 0.75rem 0 0 0;
+  padding-left: 0.75rem;
+  border-left-width: 2px;
+}
+
 /* Wiki Links */
 .wiki-link {
   color: var(--accent);

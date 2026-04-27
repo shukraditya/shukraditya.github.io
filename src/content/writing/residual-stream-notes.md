@@ -171,6 +171,7 @@ The formula can additionally be interpreted in two ways:
 	4. sum it over j and aggregate info from multiple positions
 
 > [!info] 
+>
 > attention chooses the source
 > OV chooses the content
 > the same linear transformation applied to every src token
