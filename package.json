@@ -10,6 +10,7 @@
     "fix-lists": "tsx tools/fix-obsidian-lists.ts"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/tailwind": "^5.1.5",
     "astro": "^5.17.1",

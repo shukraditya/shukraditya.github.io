@@ -22,6 +22,21 @@ const sortedPosts = writingPosts
     title="Shukraditya Bose — ML, Mech Interp, and Engineering Notes"
     description="Writing and notes on machine learning, mechanistic interpretability, and engineering."
 >
+    <Fragment slot="head">
+        <script type="application/ld+json" set:html={JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Shukraditya Bose",
+            "url": "https://shukraditya.in",
+            "sameAs": [
+                "https://github.com/shukraditya",
+                "https://x.com/shookscooks",
+                "https://www.linkedin.com/in/shukraditya-bose/"
+            ],
+            "jobTitle": "ML Engineer & Researcher",
+            "description": "Building production ML systems and writing about mechanistic interpretability."
+        })} />
+    </Fragment>
     <div class="min-h-screen flex flex-col">
         <Nav current="home" />
 

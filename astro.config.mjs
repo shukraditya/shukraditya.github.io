@@ -10,7 +10,11 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://shukraditya.in',
   output: 'static',
-  integrations: [tailwind(), sitemap()],
+  integrations: [tailwind(), sitemap({
+    changefreq: 'weekly',
+    priority: 0.7,
+    lastmod: new Date(),
+  })],
   markdown: {
     remarkPlugins: [remarkCallouts, remarkObsidianLists, remarkWikiLinks],
   },

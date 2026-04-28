@@ -43,7 +43,12 @@ function calculateReadTime(content: string | undefined): number {
 const readTime = calculateReadTime(post.body);
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout title={`${post.data.title} — Shukraditya Bose`} description={post.data.description}>
+  <Fragment slot="head">
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content={post.data.date.toISOString()} />
+    <meta property="article:author" content="Shukraditya Bose" />
+  </Fragment>
   <div class="min-h-screen flex flex-col">
     <Nav current="writing" />
 
